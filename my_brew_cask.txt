@@ -1,6 +1,7 @@
 alacritty
 bitwarden
 element
+font-jetbrains-mono-nerd-font
 nikitabobko/tap/aerospace
 thunderbird
 zed
