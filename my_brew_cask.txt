@@ -1,6 +1,6 @@
-aerospace
 alacritty
 bitwarden
 element
+nikitabobko/tap/aerospace
 thunderbird
 zed
