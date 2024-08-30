@@ -1,0 +1,6 @@
+aerospace
+alacritty
+bitwarden
+element
+thunderbird
+zed

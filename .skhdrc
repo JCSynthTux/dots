@@ -1,0 +1,48 @@
+# ~/.skhdrc
+
+# Basic App Launching
+alt + shift - t : open -a "Alacritty"
+alt + shift - r : open -a "Safari"
+alt + shift - e : open -a "Finder"
+
+# Mission Control
+cmd + shift - up : mission-control
+cmd + shift - down : application-windows
+cmd + shift - left : show-desktop
+
+# Miscellaneous
+cmd + alt - r : reload config
+cmd + shift - p : pmset sleepnow
+
+# Navigation
+alt - a : aerospace focus --boundaries workspace left
+alt - s : aerospace focus --boundaries workspace down
+alt - w : aerospace focus --boundaries workspace up
+alt - d : aerospace focus --boundaries workspace right
+
+alt + shift - a : aerospace move left
+alt + shift - s : aerospace move down
+alt + shift - w : aerospace move up
+alt + shift - d : aerospace move right
+
+# Resize
+alt + shift - down : aerospace resize smart -50
+alt + shift - up : aerospace resize smart +50
+
+# Spaces
+alt - 1 : aerospace workspace 1
+alt - 2 : aerospace workspace 2
+alt - 3 : aerospace workspace 3
+alt - 4 : aerospace workspace 4
+alt - 5 : aerospace workspace 5
+alt - 6 : aerospace workspace 6
+
+alt + shift - 1 : aerospace move-node-to-workspace 1; aerospace workspace 1
+alt + shift - 2 : aerospace move-node-to-workspace 2; aerospace workspace 2
+alt + shift - 3 : aerospace move-node-to-workspace 3; aerospace workspace 3
+alt + shift - 4 : aerospace move-node-to-workspace 4; aerospace workspace 4
+alt + shift - 5 : aerospace move-node-to-workspace 5; aerospace workspace 5
+alt + shift - 6 : aerospace move-node-to-workspace 6; aerospace workspace 6
+
+alt - tab: aerospace workspace-back-and-forth
+alt + shift - tab: move-workspace-to-monitor --wrap-around next

@@ -1,0 +1,15 @@
+docker
+docker-compose
+felixkratz/formulae/sketchybar
+git
+gnu-tar
+htop
+iperf
+koekeishiya/formulae/skhd
+kubernetes-cli
+neofetch
+neovim
+sshpass
+telnet
+unzip
+wget
