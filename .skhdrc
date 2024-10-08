@@ -44,5 +44,5 @@ alt + shift - 4 : aerospace move-node-to-workspace 4; aerospace workspace 4
 alt + shift - 5 : aerospace move-node-to-workspace 5; aerospace workspace 5
 alt + shift - 6 : aerospace move-node-to-workspace 6; aerospace workspace 6
 
-alt - tab: aerospace workspace-back-and-forth
-alt + shift - tab: move-workspace-to-monitor --wrap-around next
+alt - tab: aerospace workspace "$(aerospace list-workspaces --monitor mouse --visible)" && aerospace workspace next
+alt + shift - tab: aerospace workspace "$(aerospace list-workspaces --monitor mouse --visible)" && aerospace workspace prev
