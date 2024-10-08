@@ -10,3 +10,9 @@
 7. Run Aerospace
 8. Open the Accessability Settings and enable Aerospace
 9. Run the '''.osx''' script
+
+## Sketchybar
+Make sure Sketchybars brew service is disabled with ```brew services stop sketchybar```.
+
+Sketchybar start up should be handled via ```aerospace```, since the ```brew service``` runs
+before ```aerospace``` and therefore the workspace will not be rendered correctly.
