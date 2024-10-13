@@ -6,6 +6,9 @@ alt + shift - q : aerospace close
 # Toggle Full Screen Focused App
 alt + shift - f : aerospace macos-native-fullscreen
 
+# Toggle Floating
+alt + shift - space : aerospace layout floating tiling
+
 # Basic App Launching
 alt + shift - t : open -a "Alacritty"
 alt + shift - r : open -a "Safari"
