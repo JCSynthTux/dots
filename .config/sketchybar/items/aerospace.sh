@@ -10,8 +10,8 @@ sketchybar --add item spacer.1 left \
 	icon.drawing=off \
 	width=10
 
-
 for sid in $(aerospace list-workspaces --all); do
+    icon_sid=$(($sid - 1))
     sketchybar --add item space.$sid left \
         --subscribe space.$sid aerospace_workspace_change \
         --set space.$sid \
@@ -20,7 +20,7 @@ for sid in $(aerospace list-workspaces --all); do
 		background.padding_right=-5 \
         label.padding_left=10 \
 		label.padding_right=10 \
-        label="$sid" \
+        label="${WORKSPACE_ICONS[$icon_sid]} | $sid" \
         click_script="aerospace workspace $sid" \
         script="$CONFIG_DIR/plugins/aerospace.sh $sid"
 done
