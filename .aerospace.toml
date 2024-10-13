@@ -42,6 +42,10 @@ if.app-id = 'com.apple.finder'
 run = ['layout floating']
 
 [[on-window-detected]]
+if.app-id = 'com.apple.Music'
+run = ['layout floating']
+
+[[on-window-detected]]
 if.app-id = 'com.apple.ActivityMonitor'
 run = ['layout floating']
 
