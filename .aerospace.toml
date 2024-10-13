@@ -97,6 +97,10 @@ run = ['move-node-to-workspace 5']
 if.app-id = 'org.mozilla.thunderbird'
 run = ['move-node-to-workspace 6']
 
+[[on-window-detected]]
+if.app-id = 'com.apple.mail'
+run = ['move-node-to-workspace 6']
+
 #[[on-window-detected]]
 #if.app-id = 'SomethingSomethingElement'
 #run = ['move-node-to-workspace 6']
