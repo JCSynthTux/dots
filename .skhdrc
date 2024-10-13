@@ -1,5 +1,8 @@
 # ~/.skhdrc
 
+# Close Focused App
+alt + shift - q : aerospace close
+
 # Basic App Launching
 alt + shift - t : open -a "Alacritty"
 alt + shift - r : open -a "Safari"
