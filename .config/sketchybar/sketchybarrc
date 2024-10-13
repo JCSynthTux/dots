@@ -41,7 +41,9 @@ source "$ITEM_DIR/front_app.sh"
 # Right
 source "$ITEM_DIR/clock.sh"
 source "$ITEM_DIR/calendar.sh"
-#source "$ITEM_DIR/battery.sh"
+if pmset -g batt | grep -q "Battery"; then
+    source "$ITEM_DIR/battery.sh"
+fi
 source "$ITEM_DIR/volume.sh"
 source "$ITEM_DIR/cpu.sh"
 
