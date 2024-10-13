@@ -85,6 +85,10 @@ run = ['move-node-to-workspace 4']
 if.app-id = 'com.apple.MobileSMS'
 run = ['move-node-to-workspace 5']
 
+[[on-window-detected]]
+if.app-id = 'com.hnc.Discord'
+run = ['move-node-to-workspace 5']
+
 #[[on-window-detected]]
 #if.app-id = 'SomethingSomethingMSTeams'
 #run = ['move-node-to-workspace 5']
