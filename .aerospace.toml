@@ -97,9 +97,9 @@ run = ['move-node-to-workspace 5']
 if.app-id = 'com.hnc.Discord'
 run = ['move-node-to-workspace 5']
 
-#[[on-window-detected]]
-#if.app-id = 'SomethingSomethingMSTeams'
-#run = ['move-node-to-workspace 5']
+[[on-window-detected]]
+if.app-id = 'com.microsoft.teams2'
+run = ['move-node-to-workspace 5']
 
 [[on-window-detected]]
 if.app-id = 'org.mozilla.thunderbird'
