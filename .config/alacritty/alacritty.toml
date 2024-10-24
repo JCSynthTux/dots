@@ -3,6 +3,13 @@ import = ["/Users/jchroback/.config/alacritty/catppuccin-mocha.toml"]
 [env]
 TERM = "xterm-256color"
 
+[window]
+padding.x = 10
+padding.y = 10
+decorations = "Buttonless"
+#opacity = 0.3
+#blur = true
+
 [font]
 size = 12
 
