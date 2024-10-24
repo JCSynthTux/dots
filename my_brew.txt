@@ -5,6 +5,7 @@ git
 gnu-tar
 htop
 iperf
+iterm2
 koekeishiya/formulae/skhd
 kubernetes-cli
 neofetch

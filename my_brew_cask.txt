@@ -1,4 +1,3 @@
-alacritty
 bitwarden
 element
 font-jetbrains-mono-nerd-font
