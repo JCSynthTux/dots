@@ -25,8 +25,8 @@ on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 inner.horizontal = 10
 inner.vertical =   10
 outer.left =       10
-outer.bottom =     5
-outer.top =        45
+outer.bottom =     [{monitor.'^built-in$' = 10 }, 10]
+outer.top =        [{monitor.'^built-in$' = 20 }, 45]
 outer.right =      10
 
 [workspace-to-monitor-force-assignment]
