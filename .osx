@@ -150,6 +150,9 @@ chflags nohidden ~/Library
 # Dock, Dashboard, and hot corners                                            #
 ###############################################################################
 
+# Autohide Docker
+defaults write com.apple.dock autohide -bool true
+
 # Set the icon size of Dock items
 defaults write com.apple.dock tilesize -int 64
 
