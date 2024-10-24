@@ -10,7 +10,7 @@ alt + shift - f : aerospace macos-native-fullscreen
 alt + shift - space : aerospace layout floating tiling
 
 # Basic App Launching
-alt + shift - t : open -a "iTerm"
+alt + shift - t : open -a "Alacritty"
 alt + shift - r : open -a "Safari"
 alt + shift - e : open -a "Finder"
 
