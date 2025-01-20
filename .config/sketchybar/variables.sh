@@ -37,4 +37,4 @@ BORDER_WIDTH=2
 
 SHADOW=on
 
-WORKSPACE_ICONS=("" "" "" "" "󰭹" "")
+WORKSPACE_ICONS=("" "" "" "" "󰭹" "")
