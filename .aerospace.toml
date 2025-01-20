@@ -62,20 +62,16 @@ if.app-id = 'org.alacritty'
 run = ['layout floating']
 
 [[on-window-detected]]
-if.app-id = 'com.apple.Safari'
-run = ['layout tiling', 'move-node-to-workspace 1']
-
-[[on-window-detected]]
-if.app-id = 'company.thebrowser.Browser'
-run = ['layout tiling', 'move-node-to-workspace 1']
-
-[[on-window-detected]]
 if.app-id = 'dev.zed.Zed'
 run = ['layout tiling', 'move-node-to-workspace 1']
 
 [[on-window-detected]]
 if.app-id = 'com.googlecode.iterm2'
 run = ['move-node-to-workspace 1']
+
+[[on-window-detected]]
+if.app-id = 'com.apple.Safari'
+run = ['layout tiling', 'move-node-to-workspace 2']
 
 [[on-window-detected]]
 if.app-id = 'com.openai.chat'
