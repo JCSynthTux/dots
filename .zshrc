@@ -70,7 +70,7 @@ ZSH_THEME="bullet-train"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(ansible brew git apt kubectl)
+plugins=(ansible brew git debian kubectl)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -107,4 +107,4 @@ export KUBE_EDITOR=nvim
 
 export TERM=xterm-256color
 
-export SSH_AUTH_SOCK=/home/<user>/.bitwarden-ssh-agent.sock
+export SSH_AUTH_SOCK=$HOME/.bitwarden-ssh-agent.sock
