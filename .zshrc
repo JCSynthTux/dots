@@ -107,3 +107,4 @@ export KUBE_EDITOR=nvim
 
 export TERM=xterm-256color
 
+export SSH_AUTH_SOCK=/home/<user>/.bitwarden-ssh-agent.sock
