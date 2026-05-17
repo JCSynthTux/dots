@@ -1,3 +1,4 @@
 .gitattributes !filter !diff
 .gitconfig filter=git-crypt diff=git-crypt
 .talos/* filter=git-crypt diff=git-crypt
+.kube/*
