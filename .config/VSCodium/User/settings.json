@@ -1,0 +1,6 @@
+{
+    "workbench.colorTheme": "Catppuccin Mocha",
+    "workbench.iconTheme": "catppuccin-mocha",
+    "git.confirmSync": false,
+    "git.path": "/home/jchroback/.config/git-ssh-wrapper.sh"
+}
