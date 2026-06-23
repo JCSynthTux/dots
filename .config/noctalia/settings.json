@@ -14,7 +14,7 @@
         "enableSessionSearch": true,
         "enableSettingsSearch": true,
         "enableWindowsSearch": true,
-        "iconMode": "none",
+        "iconMode": "tabler",
         "ignoreMouseInput": false,
         "overviewLayer": false,
         "pinnedApps": [
@@ -255,9 +255,9 @@
         "manualSunrise": "06:30",
         "manualSunset": "18:30",
         "monitorForColors": "",
-        "predefinedScheme": "Noctalia (default)",
+        "predefinedScheme": "",
         "schedulingMode": "off",
-        "syncGsettings": true,
+        "syncGsettings": false,
         "useWallpaperColors": false
     },
     "controlCenter": {
@@ -353,6 +353,12 @@
         ],
         "onlySameOutput": true,
         "pinnedApps": [
+            "org.kde.dolphin.desktop",
+            "chromium.desktop",
+            "Alacritty.desktop",
+            "vscodium.desktop",
+            "bitwarden.desktop",
+            "cachyos-pi.desktop"
         ],
         "pinnedStatic": false,
         "position": "bottom",
@@ -659,8 +665,8 @@
         "translucentWidgets": false
     },
     "wallpaper": {
-        "automationEnabled": false,
-        "directory": "/home/jchroback/Pictures/Wallpapers",
+        "automationEnabled": true,
+        "directory": "/home/jchroback/.config/wallpapers",
         "enableMultiMonitorDirectories": false,
         "enabled": true,
         "favorites": [
@@ -675,7 +681,7 @@
         "overviewEnabled": false,
         "overviewTint": 0.6,
         "panelPosition": "follow_bar",
-        "randomIntervalSec": 300,
+        "randomIntervalSec": 1800,
         "setWallpaperOnAllMonitors": true,
         "showHiddenFiles": false,
         "skipStartupTransition": false,
