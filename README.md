@@ -18,7 +18,7 @@ Flags: `--link` (symlink configs), `--packages` (install deps), `--fonts` (JetBr
 |-----------|------|
 | **WM/Compositor** | Hyprland (Lua config via CachyOS DSL) |
 | **Shell** | Noctalia (bar, dock, launcher, notifications, wallpaper, OSD, lock screen) |
-| **Terminal** | Alacritty |
+| **Terminal** | Kitty |
 | **Browser** | Chromium |
 | **Editor** | VSCodium |
 | **Shell** | Zsh with oh-my-zsh (bullet-train theme) |
@@ -78,7 +78,7 @@ Catppuccin Mocha throughout — terminal, editor, shell UI, window borders, and 
 
 - **Hyprland** — Wayland compositor
 - **noctalia** — Desktop shell
-- **Alacritty** — Terminal emulator
+- **Kitty** — Terminal emulator
 - **Chromium** — Web browser
 - **VSCodium** — Code editor
 - **dolphin** — File manager

@@ -355,7 +355,7 @@
         "pinnedApps": [
             "org.kde.dolphin.desktop",
             "chromium.desktop",
-            "Alacritty.desktop",
+            "kitty.desktop",
             "vscodium.desktop",
             "bitwarden.desktop",
             "cachyos-pi.desktop"

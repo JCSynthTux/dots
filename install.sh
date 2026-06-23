@@ -92,7 +92,7 @@ install_packages() {
 
     local packages=(
         hyprland
-        alacritty
+        kitty
         chromium
         vscodium
         dolphin

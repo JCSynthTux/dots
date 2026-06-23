@@ -1,6 +1,6 @@
 -- Hyprland default apps
 
-TERMINAL     = "alacritty"
+TERMINAL     = "kitty"
 FILE_MANAGER = "dolphin"
 BROWSER      = "chromium"
 EDITOR       = "codium"
