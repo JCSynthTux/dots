@@ -2,6 +2,16 @@
 
 Personal dotfiles for Arch Linux / CachyOS — Hyprland + Noctalia desktop, Catppuccin Mocha themed.
 
+## Quick Start
+
+```bash
+git clone git@github.com:JCSynthTux/dots.git ~/dots
+cd ~/dots
+./install.sh --all
+```
+
+Flags: `--link` (symlink configs), `--packages` (install deps), `--fonts` (JetBrainsMono Nerd Font), `--all` (everything).
+
 ## Overview
 
 | Component | What |
