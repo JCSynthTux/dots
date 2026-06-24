@@ -1,6 +1,6 @@
 
 -- Workspace assignments
-hl.window_rule({ match = { class = "^(chromium|Chromium|google-chrome|google-chromium)$" }, workspace = 1 })
+hl.window_rule({ match = { class = "^(zen|Zen|zen-browser|chromium|Chromium|google-chrome|google-chromium)$" }, workspace = 1 })
 hl.window_rule({ match = { class = "^(kitty|Alacritty|alacritty)$" }, workspace = 2 })
 hl.window_rule({ match = { class = "^(vscodium|VSCodium|VSCodium - Insiders|codium|Code - OSS|code-oss)$" }, workspace = 3 })
 hl.window_rule({ match = { class = "^(bitwarden|Bitwarden)$" }, workspace = 4 })

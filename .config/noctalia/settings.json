@@ -345,7 +345,7 @@
         "onlySameOutput": true,
         "pinnedApps": [
             "org.kde.dolphin.desktop",
-            "chromium.desktop",
+            "zen.desktop",
             "kitty.desktop",
             "vscodium.desktop",
             "bitwarden.desktop",

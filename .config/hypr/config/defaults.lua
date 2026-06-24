@@ -2,6 +2,6 @@
 
 TERMINAL     = "kitty"
 FILE_MANAGER = "dolphin"
-BROWSER      = "chromium"
+BROWSER      = "/opt/zen-browser-bin/zen-bin"
 EDITOR       = "codium"
 CALCULATOR   = "gnome-calculator"
