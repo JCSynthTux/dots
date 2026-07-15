@@ -62,6 +62,16 @@ hl.window_rule({ match = { class = "^(org.kde.keditfiletype)$" }, float = true }
 hl.window_rule({ match = { class = "^(org.kde.ark)$" }, size = "(monitor_w*0.40) (monitor_h*0.40)" })
 hl.window_rule({
     match = {
+        class = "^(kitty)$",
+        title = "^(ranger)$",
+    },
+    float  = true,
+    center = true,
+    size   = "900 600",
+})
+
+hl.window_rule({
+    match = {
         class = "^(org.kde.dolphin)$",
         title = "negative:^(Moving.*|Create New.*|Extract.*|Compress.*|Copying.*|Progress.*|Configure.*|Properties.*|Choose\\sApplication.*)$",
     },
