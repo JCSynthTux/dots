@@ -250,7 +250,7 @@
         "monitorForColors": "",
         "predefinedScheme": "",
         "schedulingMode": "off",
-        "syncGsettings": false,
+        "syncGsettings": true,
         "useWallpaperColors": false
     },
     "controlCenter": {
