@@ -1,0 +1,20 @@
+version = 1
+
+[global]
+dll = "/home/jchroback/.steam/steam/steamapps/common/Lossless Scaling/Lossless.dll"
+
+[[game]]
+exe = "Phasmophobia.ex"
+multiplier = 2
+flow_scale = 1.0
+performance_mode = false
+hdr_mode = false
+experimental_present_mode = "fifo"
+
+[[game]]
+exe = "GameThread"
+multiplier = 2
+flow_scale = 1.0
+performance_mode = false
+hdr_mode = false
+experimental_present_mode = "fifo"
