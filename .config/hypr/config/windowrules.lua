@@ -15,6 +15,8 @@ hl.window_rule({
     pin               = true,
 })
 
+hl.window_rule({ match = { class = "^(steam)$" }, workspace = 6 })
+
 -- Gaming
 local gamingApps = "^(steam_app.*|gamescope)$"
 local gamingWorkspace = "name:gaming"
