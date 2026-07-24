@@ -4,23 +4,7 @@ version = 1
 dll = "/home/jchroback/.steam/steam/steamapps/common/Lossless Scaling/Lossless.dll"
 
 [[game]]
-exe = "Client-Win64-Sh"
-multiplier = 2
-flow_scale = 1.0
-performance_mode = false
-hdr_mode = false
-experimental_present_mode = "fifo"
-
-[[game]]
 exe = "GTAIV.exe"
-multiplier = 2
-flow_scale = 1.0
-performance_mode = false
-hdr_mode = false
-experimental_present_mode = "fifo"
-
-[[game]]
-exe = "GameThread"
 multiplier = 2
 flow_scale = 1.0
 performance_mode = false
