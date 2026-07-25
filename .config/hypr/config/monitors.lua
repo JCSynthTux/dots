@@ -11,7 +11,7 @@ hl.monitor({
 
 hl.monitor({
     output        = "",
-    mode          = "preferred",
+    mode          = "highrr",
     position      = "0x0",
     scale         = 1,
     bitdepth      = 10,
