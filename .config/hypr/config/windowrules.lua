@@ -16,6 +16,7 @@ hl.window_rule({
 })
 
 hl.window_rule({ match = { class = "^(steam)$" }, workspace = 6 })
+hl.window_rule({ match = { class = "^(localsend|LocalSend)$" }, float = true, center = true, size = "800 650" })
 
 -- Gaming
 local gamingApps = "^(steam_app.*|gamescope)$"

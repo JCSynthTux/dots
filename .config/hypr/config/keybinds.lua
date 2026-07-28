@@ -84,6 +84,7 @@ hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd(noctCall .. " wallpaper toggl
 
 -- Clipboard
 hl.bind(mainMod .. " + V", hl.dsp.exec_cmd(noctCall .. "launcher clipboard"))
+hl.bind(mainMod .. " + N", hl.dsp.exec_cmd(launchPrefix .. "localsend"))
 
 --------------------
 ---- WORKSPACES ----
