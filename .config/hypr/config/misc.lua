@@ -9,7 +9,7 @@ hl.config({
 		middle_click_paste = false,
 		enable_swallow = true,
 		swallow_regex = "(kitty|ghostty|[Kk]onsole|Alacritty|gnome-terminal|xfce[0-9]?-terminal)",
-		vrr = 3,
+		vrr = 1,
 	},
 	render = {
 		cm_enabled = true,

@@ -16,7 +16,7 @@ hl.monitor({
     scale         = 1,
     bitdepth      = 10,
     sdrbrightness = 1.2,
-    vrr           = 3,
+    vrr           = 1,
 })
 
 local SOCKET = "/home/jchroback/.config/hypr/scripts/hypr-socket.py"
