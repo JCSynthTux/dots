@@ -46,7 +46,7 @@
         "capsuleOpacity": 1,
         "contentPadding": 2,
         "density": "default",
-        "displayMode": "always_visible",
+        "displayMode": "smart",
         "enableExclusionZoneInset": true,
         "fontScale": 1,
         "frameRadius": 16,
@@ -101,11 +101,11 @@
                     "colorizeSystemIcon": "none",
                     "colorizeSystemText": "none",
                     "customIconPath": "",
-                    "enableColorization": false,
+                    "enableColorization": true,
                     "icon": "rocket",
                     "iconColor": "none",
                     "id": "Launcher",
-                    "useDistroLogo": false
+                    "useDistroLogo": true
                 },
                 {
                     "clockColor": "none",
@@ -144,7 +144,7 @@
                     "id": "ActiveWindow",
                     "maxWidth": 145,
                     "scrollingMode": "hover",
-                    "showIcon": true,
+                    "showIcon": false,
                     "showText": true,
                     "textColor": "none",
                     "useFixedWidth": false
