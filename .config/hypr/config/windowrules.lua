@@ -3,7 +3,7 @@
 hl.window_rule({ match = { class = "^(zen|Zen|zen-browser|chromium|Chromium|google-chrome|google-chromium|librewolf|Librewolf)$" }, workspace = 1 })
 hl.window_rule({ match = { class = "^(kitty|Alacritty|alacritty)$" }, workspace = 2 })
 hl.window_rule({ match = { class = "^(vscodium|VSCodium|VSCodium - Insiders|codium|Code - OSS|code-oss)$" }, workspace = 3 })
-hl.window_rule({ match = { class = "^(bitwarden|Bitwarden|org.keepassxc.KeePassXC)$" }, workspace = 4 })
+hl.window_rule({ match = { class = "^(bitwarden|Bitwarden|org.keepassxc.KeePassXC|KeePassXC)$" }, workspace = 4 })
 
 -- Picture-in-Picture
 hl.window_rule({
