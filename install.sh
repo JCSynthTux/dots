@@ -93,10 +93,10 @@ install_packages() {
     local packages=(
         hyprland
         kitty
-        chromium
+        librewolf
         vscodium
-        dolphin
         zsh
+        ly
         oh-my-zsh-git
         qt6ct
         noto-fonts
@@ -112,6 +112,7 @@ install_packages() {
         qt5-wayland
         brightnessctl
         pavucontrol
+        keepassxc
     )
 
     local missing=()
