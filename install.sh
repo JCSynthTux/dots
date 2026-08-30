@@ -92,6 +92,9 @@ install_packages() {
 
     local packages=(
         hyprland
+        hyprlauncher
+        waybar
+        playerctl
         kitty
         librewolf
         vscodium

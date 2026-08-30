@@ -17,7 +17,9 @@ Flags: `--link` (symlink configs), `--packages` (install deps), `--fonts` (JetBr
 | Component | What |
 |-----------|------|
 | **WM/Compositor** | Hyprland (Lua config via CachyOS DSL) |
-| **Shell** | Noctalia (bar, dock, launcher, notifications, wallpaper, OSD, lock screen) |
+| **Shell** | Noctalia (control center, notifications, OSD, lock screen, wallpaper) |
+| **Bar** | Waybar |
+| **Launcher** | Hyprlauncher |
 | **Terminal** | Kitty |
 | **Browser** | Chromium |
 | **Editor** | VSCodium |
@@ -31,8 +33,11 @@ Flags: `--link` (symlink configs), `--packages` (install deps), `--fonts` (JetBr
 ├── alacritty/          Alacritty terminal config
 ├── hypr/               Hyprland compositor config
 │   ├── hyprland.lua    Entry point
+│   ├── hyprlauncher.conf  Hyprlauncher config (Hyprlang)
+│   ├── hyprtoolkit.conf   Hyprtoolkit theme (Catppuccin Mocha)
 │   └── config/         Split modules (keybinds, monitors, windowrules, etc.)
-├── noctalia/           Desktop shell (bar, dock, launcher, notifications)
+├── noctalia/           Desktop shell (control center, notifications, lock screen)
+├── waybar/             Top bar (replaces Noctalia bar)
 ├── VSCodium/           VSCodium editor settings
 └── wallpapers/         Wallpaper images
 .oh-my-zsh/             Custom oh-my-zsh theme
@@ -42,7 +47,8 @@ Flags: `--link` (symlink configs), `--packages` (install deps), `--fonts` (JetBr
 ## Features
 
 ### Keybinds
-- **Super + Space** — App launcher (noctalia)
+- **Super + Space** — App launcher (hyprlauncher)
+- **Super + .** — Launcher (type `.` for emoji/unicode)
 - **Super + Q** — Close window
 - **Super + Enter** — Terminal (Alacritty)
 - **Super + W** — Browser (Chromium)
@@ -77,7 +83,10 @@ Catppuccin Mocha throughout — terminal, editor, shell UI, window borders, and 
 ## Dependencies
 
 - **Hyprland** — Wayland compositor
-- **noctalia** — Desktop shell
+- **noctalia** — Desktop shell (control center, notifications, lock screen)
+- **waybar** — Top bar
+- **hyprlauncher** — App launcher
+- **playerctl** — Media player control (waybar mpris module)
 - **Kitty** — Terminal emulator
 - **Chromium** — Web browser
 - **VSCodium** — Code editor

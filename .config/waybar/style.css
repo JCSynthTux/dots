@@ -1,0 +1,149 @@
+@define-color base #1e1e2e;
+@define-color mantle #181825;
+@define-color crust #11111b;
+@define-color surface0 #313244;
+@define-color surface1 #45475a;
+@define-color surface2 #585b70;
+@define-color overlay0 #6c7086;
+@define-color text #cdd6f4;
+@define-color mauve #cba6f7;
+@define-color blue #89b4fa;
+@define-color yellow #f9e2af;
+@define-color red #f38ba8;
+@define-color rosewater #f5e0dc;
+
+* {
+    font-family: "JetBrainsMono Nerd Font";
+    font-size: 12px;
+    font-weight: 600;
+    min-height: 0;
+}
+
+window#waybar {
+    background: rgba(30, 30, 46, 0.93);
+    border-radius: 16px;
+    color: @text;
+}
+
+window#waybar.hidden {
+    opacity: 0.2;
+}
+
+tooltip {
+    background: @base;
+    border: 1px solid @surface0;
+    border-radius: 10px;
+    color: @text;
+}
+
+tooltip label {
+    color: @text;
+}
+
+#workspaces button {
+    padding: 0 6px;
+    margin: 4px 2px;
+    border-radius: 10px;
+    color: @surface2;
+    background: transparent;
+}
+
+#workspaces button:hover {
+    background: @surface0;
+    color: @text;
+}
+
+#workspaces button.occupied {
+    color: @text;
+}
+
+#workspaces button.active {
+    background: @mauve;
+    color: @base;
+}
+
+#custom-launcher,
+#clock,
+#cpu,
+#temperature,
+#memory,
+#window,
+#mpris,
+#tray,
+#custom-notifications,
+#battery,
+#pulseaudio,
+#backlight,
+#custom-control-center {
+    padding: 0 8px;
+    margin: 4px 2px;
+    border-radius: 10px;
+    background: transparent;
+    color: @text;
+}
+
+#custom-launcher:hover,
+#clock:hover,
+#cpu:hover,
+#temperature:hover,
+#memory:hover,
+#window:hover,
+#mpris:hover,
+#tray:hover,
+#custom-notifications:hover,
+#battery:hover,
+#pulseaudio:hover,
+#backlight:hover,
+#custom-control-center:hover {
+    background: @surface0;
+}
+
+#window.empty {
+    padding: 0;
+    margin: 0;
+    opacity: 0;
+}
+
+#custom-launcher {
+    color: @mauve;
+    font-size: 15px;
+    padding: 0 10px;
+}
+
+#custom-notifications {
+    color: @blue;
+}
+
+#custom-control-center {
+    color: @mauve;
+}
+
+#temperature.critical {
+    color: @red;
+}
+
+#battery.warning {
+    color: @yellow;
+}
+
+#battery.critical {
+    color: @red;
+}
+
+#pulseaudio.muted {
+    color: @surface2;
+}
+
+#backlight {
+    color: @yellow;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+    background-color: @red;
+    border-radius: 10px;
+}
