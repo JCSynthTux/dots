@@ -1,12 +1,12 @@
 -- Monitor config for laptop/desktop with USB-C dock support
--- eDP-1 is the built-in laptop display (no HDR)
+-- eDP-1 is the built-in laptop display (no HDR, 13" FHD -> scale 1.25)
 -- All other monitors (fallback rule) get HDR enabled
 
 hl.monitor({
     output   = "eDP-1",
     mode     = "preferred",
     position = "auto-right",
-    scale    = "auto",
+    scale    = 1.25,
 })
 
 hl.monitor({

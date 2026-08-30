@@ -17,7 +17,7 @@ dots/
 │   │   ├── hyprlock.conf      # Hyprlock lock screen config
 │   │   ├── hyprtoolkit.conf   # Hyprtoolkit theme — Catppuccin Mocha (shared by hyprlauncher)
 │   │   ├── config/         # Split config modules (see table below)
-│   │   ├── scripts/        # Python monitor hot-plug script
+│   │   ├── scripts/        # Monitor hot-plug (hypr-socket.py), screenshot.sh, wallpaper-cycle.sh, waybar-launch.sh
 │   │   └── xdph.conf       # XDG Desktop Portal for Hyprland
 │   ├── kitty/              # Kitty terminal config (primary terminal)
 │   ├── noctalia/           # Noctalia desktop shell config (control center, notifications, OSD)
@@ -109,7 +109,7 @@ Kitty is the primary terminal. The Alacritty config is retained as legacy/refere
 ### Modifying keybinds
 - Edit `.config/hypr/config/keybinds.lua`
 - Use `hl.bind()` for the DSL
-- Hardware keys (XF86Audio*, brightness) route through Noctalia IPC, not Hyprland directly
+- Hardware keys (XF86Audio*, brightness) use native tools: `wpctl`, `playerctl`, `brightnessctl`
 
 ### Modifying VSCodium settings
 - Edit `.config/VSCodium/User/settings.json`

@@ -1,0 +1,92 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 32,
+    "margin-top": 6,
+    "margin-bottom": 0,
+    "margin-left": 280,
+    "margin-right": 280,
+    "spacing": 2,
+
+    "modules-left": ["clock", "cpu", "temperature", "memory", "hyprland/window"],
+    "modules-center": ["hyprland/workspaces"],
+    "modules-right": ["tray", "custom/notifications", "battery", "pulseaudio", "backlight"],
+
+    "clock": {
+        "format": "{:%H:%M %a, %b %d}",
+        "tooltip-format": "{:%A, %d %B %Y}",
+        "interval": 10
+    },
+
+    "cpu": {
+        "format": " {usage}%",
+        "interval": 2
+    },
+
+    "temperature": {
+        "thermal-zone": 0,
+        "format": " {temperatureC}°C",
+        "critical-threshold": 80,
+        "interval": 5
+    },
+
+    "memory": {
+        "format": " {percentage}%",
+        "interval": 5
+    },
+
+    "hyprland/window": {
+        "format": "{title}",
+        "max-length": 30,
+        "tooltip": false
+    },
+
+    "hyprland/workspaces": {
+        "format": "{id}",
+        "on-click": "activate",
+        "sort-by-number": true,
+        "show-empty": false
+    },
+
+    "tray": {
+        "icon-size": 14,
+        "spacing": 6
+    },
+
+    "custom/notifications": {
+        "format": "",
+        "tooltip": false,
+        "on-click": "qs -c noctalia-shell ipc call notifications toggleHistory",
+        "interval": "once"
+    },
+
+    "battery": {
+        "format": "{icon} {capacity}%",
+        "format-icons": ["", "", "", "", ""],
+        "states": {
+            "warning": 20,
+            "critical": 5
+        },
+        "interval": 30
+    },
+
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-muted": " muted",
+        "format-icons": {
+            "default": ["", "", ""]
+        },
+        "on-click": "pwvucontrol || pavucontrol",
+        "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+        "on-scroll-up": "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+",
+        "on-scroll-down": "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%-",
+        "scroll-step": 5
+    },
+
+    "backlight": {
+        "format": "{icon} {percent}%",
+        "format-icons": [""],
+        "on-scroll-up": "brightnessctl set 5%+",
+        "on-scroll-down": "brightnessctl set 5%-"
+    }
+}

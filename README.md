@@ -56,6 +56,9 @@ Flags: `--link` (symlink configs), `--packages` (install deps), `--fonts` (JetBr
 - **Super + Ctrl + L** — Lock + hibernate
 - **Sleep key** — Lock + suspend
 - **Super + Q** — Close window
+- **Print** / **Super + Print** — Region / window screenshot (grim + slurp)
+- **Super + V** — Clipboard picker (cliphist + hyprlauncher)
+- **Super + Shift + W** — Cycle wallpaper (hyprpaper)
 - **Super + Enter** — Terminal (Alacritty)
 - **Super + W** — Browser (Chromium)
 - **Super + E** — File manager (Dolphin)
