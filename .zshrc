@@ -107,7 +107,9 @@ export KUBE_EDITOR=nvim
 
 export TERM=xterm-256color
 
-export SSH_AUTH_SOCK=$HOME/.bitwarden-ssh-agent.sock
+export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
+
+# export SSH_AUTH_SOCK=$HOME/.bitwarden-ssh-agent.sock
 
 # Snap
 # export SSH_AUTH_SOCK=/home/$USER/snap/bitwarden/current/.bitwarden-ssh-agent.sock
