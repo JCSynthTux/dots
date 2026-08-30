@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This is a **CachyOS (Arch-based) dotfiles repository** for a desktop environment focused on **productivity (coding, DevOps) and gaming**. The stack is built on **Hyprland** (Wayland compositor) with **Waybar** as the top bar, **Hyprlauncher** as the app launcher, and **Noctalia** as the desktop shell (control center, notifications, OSD, lock screen), unified under the **Catppuccin Mocha** color theme.
+This is a **CachyOS (Arch-based) dotfiles repository** for a desktop environment focused on **productivity (coding, DevOps) and gaming**. The stack is built on **Hyprland** (Wayland compositor) with **Waybar** as the top bar, **Hyprlauncher** as the app launcher, **Hyprlock** as the lock screen, and **Noctalia** as the desktop shell (control center, notifications, OSD), unified under the **Catppuccin Mocha** color theme.
 
 ## Repository Structure
 
@@ -14,12 +14,13 @@ dots/
 │   ├── hypr/                # Hyprland compositor config (modular Lua)
 │   │   ├── hyprland.lua    # Entry point — requires 11 sub-modules
 │   │   ├── hyprlauncher.conf  # Hyprlauncher config (Hyprlang)
+│   │   ├── hyprlock.conf      # Hyprlock lock screen config
 │   │   ├── hyprtoolkit.conf   # Hyprtoolkit theme — Catppuccin Mocha (shared by hyprlauncher)
 │   │   ├── config/         # Split config modules (see table below)
 │   │   ├── scripts/        # Python monitor hot-plug script
 │   │   └── xdph.conf       # XDG Desktop Portal for Hyprland
 │   ├── kitty/              # Kitty terminal config (primary terminal)
-│   ├── noctalia/           # Noctalia desktop shell config (control center, notifications, lock screen)
+│   ├── noctalia/           # Noctalia desktop shell config (control center, notifications, OSD)
 │   ├── waybar/             # Top bar (config.jsonc + style.css, Catppuccin Mocha)
 │   ├── VSCodium/           # VSCodium editor settings
 │   └── wallpapers/         # 4 wallpaper images

@@ -12,8 +12,19 @@ hl.bind(mainMod .. " + ALT + Space", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + D",           hl.dsp.window.fullscreen({ mode = 1 }))
 hl.bind(mainMod .. " + F",           hl.dsp.window.fullscreen())
 hl.bind(mainMod .. " + J",           hl.dsp.layout("togglesplit"))
-hl.bind(mainMod .. " + L",           hl.dsp.exec_cmd(noctCall .. " lockScreen lock"))
 hl.bind(mainMod .. " + ALT + C",     hl.dsp.exec_cmd(noctCall .. " sessionMenu toggle"))
+
+--------------------------
+---- SYSTEM POWER ----
+--------------------------
+
+-- Lock screen (hyprlock)
+hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("hyprlock"))
+
+-- Suspend / hibernate with screen locked
+hl.bind(mainMod .. " + SHIFT + L",   hl.dsp.exec_cmd("hyprlock & sleep 0.5 && systemctl suspend"))
+hl.bind(mainMod .. " + CONTROL + L", hl.dsp.exec_cmd("hyprlock & sleep 0.5 && systemctl hibernate"))
+hl.bind("XF86Sleep",                 hl.dsp.exec_cmd("hyprlock & sleep 0.5 && systemctl suspend"))
 
 -- Change focus
 hl.bind(mainMod .. " + Left",  hl.dsp.focus({ direction = "left" }))

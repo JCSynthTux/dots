@@ -93,6 +93,7 @@ install_packages() {
     local packages=(
         hyprland
         hyprlauncher
+        hyprlock
         waybar
         playerctl
         kitty
