@@ -88,9 +88,6 @@ hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl set 5%-"), { rep
 hl.bind("Print",               hl.dsp.exec_cmd("$HOME/.config/hypr/scripts/screenshot.sh region"))
 hl.bind(mainMod .. " + Print", hl.dsp.exec_cmd("$HOME/.config/hypr/scripts/screenshot.sh window"))
 
--- Wallpaper cycle
-hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("$HOME/.config/hypr/scripts/wallpaper-cycle.sh"))
-
 -- Clipboard (cliphist + hyprlauncher picker)
 hl.bind(mainMod .. " + V", hl.dsp.exec_cmd("cliphist list | hyprlauncher -m | cliphist decode | wl-copy"))
 hl.bind(mainMod .. " + N", hl.dsp.exec_cmd(launchPrefix .. "localsend"))

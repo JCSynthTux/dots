@@ -58,14 +58,12 @@ Flags: `--link` (symlink configs), `--packages` (install deps), `--fonts` (JetBr
 - **Super + Q** — Close window
 - **Print** / **Super + Print** — Region / window screenshot (grim + slurp)
 - **Super + V** — Clipboard picker (cliphist + hyprlauncher)
-- **Super + Shift + W** — Cycle wallpaper (hyprpaper)
 - **Super + Enter** — Terminal (Alacritty)
 - **Super + W** — Browser (Chromium)
 - **Super + E** — File manager (Dolphin)
 - **Super + T** — Editor (VSCodium)
 - **Super + H** — Hide window (scratchpad)
 - **Super + 1-0** — Switch workspaces
-- **Super + Shift + W** — Wallpaper toggle
 - **Super + Shift + S** / **Super + S** — Scratchpad
 
 ### Workspace Layout

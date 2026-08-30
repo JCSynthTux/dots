@@ -17,7 +17,7 @@ dots/
 │   │   ├── hyprlock.conf      # Hyprlock lock screen config
 │   │   ├── hyprtoolkit.conf   # Hyprtoolkit theme — Catppuccin Mocha (shared by hyprlauncher)
 │   │   ├── config/         # Split config modules (see table below)
-│   │   ├── scripts/        # Monitor hot-plug (hypr-socket.py), screenshot.sh, wallpaper-cycle.sh, waybar-launch.sh
+│   │   ├── scripts/        # Monitor hot-plug (hypr-socket.py), screenshot.sh, waybar-launch.sh
 │   │   └── xdph.conf       # XDG Desktop Portal for Hyprland
 │   ├── kitty/              # Kitty terminal config (primary terminal)
 │   ├── noctalia/           # Noctalia desktop shell config (control center, notifications, OSD)
