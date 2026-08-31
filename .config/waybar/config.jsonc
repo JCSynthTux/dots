@@ -8,9 +8,9 @@
     "margin-right": 350,
     "spacing": 2,
 
-    "modules-left": ["clock", "cpu", "temperature", "memory", "hyprland/window"],
+    "modules-left": ["clock", "cpu", "temperature", "memory"],
     "modules-center": ["hyprland/workspaces"],
-    "modules-right": ["tray", "custom/notifications", "battery", "pulseaudio", "backlight"],
+    "modules-right": ["tray", "custom/notifications", "custom/power-profile", "battery", "pulseaudio", "backlight"],
 
     "clock": {
         "format": "{:%H:%M %a, %b %d}",
@@ -35,12 +35,6 @@
         "interval": 5
     },
 
-    "hyprland/window": {
-        "format": "{title}",
-        "max-length": 30,
-        "tooltip": false
-    },
-
     "hyprland/workspaces": {
         "format": "{id}",
         "on-click": "activate",
@@ -58,6 +52,14 @@
         "tooltip": false,
         "on-click": "qs -c noctalia-shell ipc call notifications toggleHistory",
         "interval": "once"
+    },
+
+    "custom/power-profile": {
+        "exec": "$HOME/.config/waybar/scripts/power-profile.sh",
+        "return-type": "json",
+        "format": "{text}",
+        "on-click": "$HOME/.config/waybar/scripts/power-profile.sh --cycle",
+        "interval": 5
     },
 
     "battery": {

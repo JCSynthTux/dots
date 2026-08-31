@@ -10,6 +10,7 @@
 @define-color blue #89b4fa;
 @define-color yellow #f9e2af;
 @define-color red #f38ba8;
+@define-color green #a6e3a1;
 @define-color rosewater #f5e0dc;
 
 * {
@@ -71,6 +72,7 @@ tooltip label {
 #mpris,
 #tray,
 #custom-notifications,
+#custom-power-profile,
 #battery,
 #pulseaudio,
 #backlight,
@@ -91,6 +93,7 @@ tooltip label {
 #mpris:hover,
 #tray:hover,
 #custom-notifications:hover,
+#custom-power-profile:hover,
 #battery:hover,
 #pulseaudio:hover,
 #backlight:hover,
@@ -112,6 +115,18 @@ tooltip label {
 
 #custom-notifications {
     color: @blue;
+}
+
+#custom-power-profile {
+    color: @green;
+}
+
+#custom-power-profile.performance {
+    color: @red;
+}
+
+#custom-power-profile.power-saver {
+    color: @green;
 }
 
 #custom-control-center {
