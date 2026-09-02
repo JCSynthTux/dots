@@ -113,8 +113,3 @@ hl.bind(mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special" })
 hl.bind(mainMod .. " + S",         hl.dsp.workspace.toggle_special())
 hl.bind(mainMod .. " + H",         hl.dsp.window.move({ workspace = "special", follow = true }))
 
------------------------
----- NOTIFICATIONS ----
------------------------
-
-hl.bind(mainMod .. " + A", hl.dsp.exec_cmd(noctCall .. "notifications toggleHistory"))
