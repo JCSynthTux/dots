@@ -71,8 +71,9 @@ tooltip label {
 #window,
 #mpris,
 #tray,
-#custom-notifications,
-#custom-power-profile,
+#power-profiles-daemon,
+#network,
+#bluetooth,
 #battery,
 #pulseaudio,
 #backlight,
@@ -92,8 +93,9 @@ tooltip label {
 #window:hover,
 #mpris:hover,
 #tray:hover,
-#custom-notifications:hover,
-#custom-power-profile:hover,
+#power-profiles-daemon:hover,
+#network:hover,
+#bluetooth:hover,
 #battery:hover,
 #pulseaudio:hover,
 #backlight:hover,
@@ -113,19 +115,15 @@ tooltip label {
     padding: 0 10px;
 }
 
-#custom-notifications {
-    color: @blue;
-}
-
-#custom-power-profile {
+#power-profiles-daemon {
     color: @green;
 }
 
-#custom-power-profile.performance {
+#power-profiles-daemon.performance {
     color: @red;
 }
 
-#custom-power-profile.power-saver {
+#power-profiles-daemon.power-saver {
     color: @green;
 }
 
