@@ -21,7 +21,7 @@ Usage: $0 [options]
 
 Options:
   --link       Symlink dotfiles into home directory
-  --packages   Install required packages (pacman)
+  --packages   Install required packages (Shelly)
   --fonts      Install JetBrainsMono Nerd Font
   --all        Run everything above
   --help       Show this help
@@ -83,59 +83,55 @@ QTCONF
 }
 
 install_packages() {
-    if ! command -v pacman &>/dev/null; then
-        err "pacman not found — skipping package installation"
+    if ! command -v shelly &>/dev/null; then
+        err "shelly not found — skipping package installation"
         return
     fi
 
-    info "Installing packages..."
+    info "Installing repository packages..."
 
     local packages=(
-        hyprland
-        hyprlauncher
-        hyprlock
-        waybar
-        playerctl
+        brightnessctl
+        gdm
+        gnome-shell
+        gnome-shell-extension-dash-to-dock
+        gnome-shell-extension-vitals
+        gnome-shell-extensions
+        gnome-themes-extra
         kitty
         librewolf
-        vscodium
-        zsh
-        ly
-        oh-my-zsh-git
-        qt6ct
         noto-fonts
-        ttf-jetbrains-mono-nerd
         otf-font-awesome
-        ttf-font-awesome
-        swww
-        pipewire
-        wireplumber
-        polkit-kde-agent
-        xdg-desktop-portal-hyprland
-        qt6-wayland
-        qt5-wayland
-        brightnessctl
         pavucontrol
-        keepassxc
+        pipewire
+        playerctl
+        qt6ct
+        ttf-font-awesome
+        ttf-jetbrains-mono-nerd
+        vscodium
+        wireplumber
+        zsh
     )
 
-    local missing=()
-    for pkg in "${packages[@]}"; do
-        if ! pacman -Qi "$pkg" &>/dev/null; then
-            missing+=("$pkg")
-        fi
-    done
+    shelly install standard --no-confirm "${packages[@]}"
+    ok "Repository package installation complete"
+}
 
-    if [ ${#missing[@]} -eq 0 ]; then
-        ok "All packages already installed"
+install_aur_packages() {
+    if ! command -v shelly &>/dev/null; then
+        err "shelly not found — skipping AUR package installation"
         return
     fi
 
-    info "Installing: ${missing[*]}"
-    if command -v pacman &>/dev/null; then
-        sudo pacman -S --needed --noconfirm "${missing[@]}"
-    fi
-    ok "Package installation complete"
+    info "Installing AUR packages..."
+
+    local aur_packages=(
+        gnome-shell-extension-blur-my-shell
+        gnome-rounded-blur
+    )
+
+    shelly install aur --no-confirm "${aur_packages[@]}"
+    ok "AUR package installation complete"
 }
 
 install_fonts() {
@@ -145,9 +141,9 @@ install_fonts() {
         return
     fi
 
-    if command -v pacman &>/dev/null; then
+    if command -v shelly &>/dev/null; then
         info "Installing ttf-jetbrains-mono-nerd..."
-        sudo pacman -S --needed --noconfirm ttf-jetbrains-mono-nerd
+        shelly install standard --no-confirm ttf-jetbrains-mono-nerd
     fi
 
     if fc-list | grep -qi "JetBrainsMono Nerd Font" &>/dev/null; then
@@ -198,7 +194,7 @@ main() {
     done
 
     $do_link     && link_dotfiles
-    $do_packages && install_packages
+    $do_packages && install_packages && install_aur_packages
     $do_fonts    && install_fonts
     $do_link     && post_install_msg
 }
