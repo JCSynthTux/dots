@@ -136,6 +136,126 @@ configure_extensions() {
     set_setting org.gnome.shell.extensions.vitals update-time 5
 }
 
+configure_blur_my_shell() {
+    # Preserve the currently exposed Blur My Shell profile. Hyprland disables
+    # blur, but this is an intentional GNOME-shell-only visual setting.
+    local schema
+    schema=org.gnome.shell.extensions.blur-my-shell
+    set_setting "$schema" brightness 0.6
+    set_setting "$schema" color "(0.0, 0.0, 0.0, 0.0)"
+    set_setting "$schema" color-and-noise true
+    set_setting "$schema" debug false
+    set_setting "$schema" hacks-level 1
+    set_setting "$schema" noise-amount 0.0
+    set_setting "$schema" noise-lightness 0.0
+    set_setting "$schema" rounded-blur-found true
+    set_setting "$schema" settings-version 2
+    set_setting "$schema" sigma 30
+    set_setting "$schema" pipelines "{'pipeline_default': {'name': <'Default'>, 'effects': <[<{'type': <'native_static_gaussian_blur'>, 'id': <'effect_000000000000'>, 'params': <{'radius': <30>, 'brightness': <0.6>}>}>]>}, 'pipeline_default_rounded': {'name': <'Default rounded'>, 'effects': <[<{'type': <'native_static_gaussian_blur'>, 'id': <'effect_000000000001'>, 'params': <{'radius': <30>, 'brightness': <0.6>}>}>, <{'type': <'corner'>, 'id': <'effect_000000000002'>, 'params': <{'radius': <24>, 'corners_bottom': <true>, 'corners_top': <true>}>}>]>}}"
+
+    schema=org.gnome.shell.extensions.blur-my-shell.appfolder
+    set_setting "$schema" blur true
+    set_setting "$schema" brightness 0.6
+    set_setting "$schema" color "(0.0, 0.0, 0.0, 0.0)"
+    set_setting "$schema" customize false
+    set_setting "$schema" noise-amount 0.0
+    set_setting "$schema" noise-lightness 0.0
+    set_setting "$schema" sigma 30
+    set_setting "$schema" style-dialogs 1
+
+    schema=org.gnome.shell.extensions.blur-my-shell.applications
+    set_setting "$schema" blacklist "['Plank','com.desktop.ding','Conky']"
+    set_setting "$schema" blur false
+    set_setting "$schema" blur-on-overview false
+    set_setting "$schema" brightness 1.0
+    set_setting "$schema" color "(0.0, 0.0, 0.0, 0.0)"
+    set_setting "$schema" corner-radius 15
+    set_setting "$schema" corner-when-maximized false
+    set_setting "$schema" customize true
+    set_setting "$schema" dynamic-opacity true
+    set_setting "$schema" enable-all false
+    set_setting "$schema" noise-amount 0.0
+    set_setting "$schema" noise-lightness 0.0
+    set_setting "$schema" opacity 215
+    set_setting "$schema" pipeline "'pipeline_default'"
+    set_setting "$schema" sigma 30
+    set_setting "$schema" static-blur false
+    set_setting "$schema" whitelist "[]"
+
+    schema=org.gnome.shell.extensions.blur-my-shell.coverflow-alt-tab
+    set_setting "$schema" blur true
+    set_setting "$schema" pipeline "'pipeline_default'"
+
+    schema=org.gnome.shell.extensions.blur-my-shell.dash-to-dock
+    set_setting "$schema" blur true
+    set_setting "$schema" brightness 0.6
+    set_setting "$schema" color "(0.0, 0.0, 0.0, 0.0)"
+    set_setting "$schema" corner-radius 18
+    set_setting "$schema" customize false
+    set_setting "$schema" noise-amount 0.0
+    set_setting "$schema" noise-lightness 0.0
+    set_setting "$schema" override-background true
+    set_setting "$schema" pipeline "'pipeline_default_rounded'"
+    set_setting "$schema" sigma 30
+    set_setting "$schema" static-blur true
+    set_setting "$schema" style-dash-to-dock 0
+    set_setting "$schema" unblur-in-overview false
+
+    set_setting org.gnome.shell.extensions.blur-my-shell.dash-to-panel blur-original-panel true
+    set_setting org.gnome.shell.extensions.blur-my-shell.hidetopbar compatibility false
+
+    schema=org.gnome.shell.extensions.blur-my-shell.lockscreen
+    set_setting "$schema" blur true
+    set_setting "$schema" brightness 0.6
+    set_setting "$schema" color "(0.0, 0.0, 0.0, 0.0)"
+    set_setting "$schema" customize false
+    set_setting "$schema" noise-amount 0.0
+    set_setting "$schema" noise-lightness 0.0
+    set_setting "$schema" pipeline "'pipeline_default'"
+    set_setting "$schema" sigma 30
+
+    schema=org.gnome.shell.extensions.blur-my-shell.overview
+    set_setting "$schema" blur true
+    set_setting "$schema" brightness 0.6
+    set_setting "$schema" color "(0.0, 0.0, 0.0, 0.0)"
+    set_setting "$schema" customize false
+    set_setting "$schema" noise-amount 0.0
+    set_setting "$schema" noise-lightness 0.0
+    set_setting "$schema" pipeline "'pipeline_default'"
+    set_setting "$schema" sigma 30
+    set_setting "$schema" style-components 1
+
+    schema=org.gnome.shell.extensions.blur-my-shell.panel
+    set_setting "$schema" blur true
+    set_setting "$schema" brightness 0.6
+    set_setting "$schema" color "(0.0, 0.0, 0.0, 0.0)"
+    set_setting "$schema" corner-radius 0
+    set_setting "$schema" customize false
+    set_setting "$schema" force-light-text false
+    set_setting "$schema" noise-amount 0.0
+    set_setting "$schema" noise-lightness 0.0
+    set_setting "$schema" override-background true
+    set_setting "$schema" override-background-dynamically false
+    set_setting "$schema" pipeline "'pipeline_default_rounded'"
+    set_setting "$schema" sigma 30
+    set_setting "$schema" static-blur true
+    set_setting "$schema" style-panel 0
+    set_setting "$schema" unblur-in-overview true
+
+    for schema in \
+        org.gnome.shell.extensions.blur-my-shell.screenshot \
+        org.gnome.shell.extensions.blur-my-shell.window-list; do
+        set_setting "$schema" blur true
+        set_setting "$schema" brightness 0.6
+        set_setting "$schema" color "(0.0, 0.0, 0.0, 0.0)"
+        set_setting "$schema" customize false
+        set_setting "$schema" noise-amount 0.0
+        set_setting "$schema" noise-lightness 0.0
+        set_setting "$schema" pipeline "'pipeline_default'"
+        set_setting "$schema" sigma 30
+    done
+}
+
 configure_dock() {
     # This is the current Dash to Dock order. Desktop file IDs are portable
     # across machines as long as the corresponding applications are installed.
@@ -146,13 +266,20 @@ configure_dock() {
 apply_settings() {
     # Catppuccin Mocha and the JetBrains Mono choices from the Hyprland setup.
     set_setting org.gnome.desktop.interface color-scheme "'prefer-dark'"
-    set_setting org.gnome.desktop.interface gtk-theme "'Orchis'"
-    set_setting org.gnome.desktop.wm.preferences theme "'Orchis'"
+    set_setting org.gnome.desktop.interface gtk-theme "'Orchis-Dark'"
+    set_setting org.gnome.desktop.wm.preferences theme "'Orchis-Dark'"
     set_setting org.gnome.desktop.interface icon-theme "'Papirus'"
+    set_setting org.gnome.desktop.interface cursor-theme "'Vimix-cursors'"
+    set_setting org.gnome.desktop.interface accent-color "'orange'"
+    set_setting org.gnome.shell.extensions.user-theme name "'Orchis-Dark'"
     set_setting org.gnome.desktop.interface font-name "'JetBrainsMono Nerd Font 11'"
     set_setting org.gnome.desktop.interface monospace-font-name "'JetBrainsMono Nerd Font 12'"
     set_setting org.gnome.desktop.interface enable-animations false
     set_setting org.gnome.desktop.interface show-battery-percentage true
+    set_setting org.gnome.desktop.interface clock-format "'24h'"
+    set_setting org.gnome.desktop.interface clock-show-date true
+    set_setting org.gnome.desktop.interface clock-show-weekday true
+    set_setting org.gnome.desktop.interface enable-hot-corners false
 
     # hyprpaper equivalent. GNOME uses separate light and dark wallpaper keys.
     local wallpaper="file://$HOME/.config/wallpapers/peach_unicat.png"
@@ -164,9 +291,15 @@ apply_settings() {
     set_setting org.gnome.desktop.peripherals.touchpad accel-profile "'flat'"
     set_setting org.gnome.desktop.peripherals.mouse natural-scroll false
     set_setting org.gnome.desktop.peripherals.touchpad natural-scroll false
+    set_setting org.gnome.desktop.peripherals.touchpad tap-to-click true
+    set_setting org.gnome.desktop.peripherals.touchpad two-finger-scrolling-enabled true
+    set_setting org.gnome.desktop.interface gtk-enable-primary-paste false
 
     # Use ten fixed workspaces for the Super+number workflow.
     set_setting org.gnome.mutter dynamic-workspaces false
+    set_setting org.gnome.mutter workspaces-only-on-primary false
+    set_setting org.gnome.mutter center-new-windows true
+    set_setting org.gnome.mutter edge-tiling true
     set_setting org.gnome.desktop.wm.preferences num-workspaces 10
     set_setting org.gnome.desktop.wm.preferences focus-mode "'sloppy'"
 
@@ -188,6 +321,7 @@ apply_settings() {
     set_setting org.gnome.settings-daemon.plugins.media-keys screensaver "['<Super>l']"
     clear_shell_conflicts
     configure_extensions
+    configure_blur_my_shell
     configure_dock
     configure_custom_bindings
 }
