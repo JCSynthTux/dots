@@ -260,7 +260,7 @@ configure_dock() {
     # This is the current Dash to Dock order. Desktop file IDs are portable
     # across machines as long as the corresponding applications are installed.
     set_setting org.gnome.shell favorite-apps \
-        "['org.gnome.Nautilus.desktop','librewolf.desktop','bitwarden.desktop','org.mozilla.Thunderbird.desktop','kitty.desktop','onlyoffice-desktopeditors.desktop']"
+        "['org.gnome.Nautilus.desktop', 'librewolf.desktop', 'bitwarden.desktop', 'org.mozilla.Thunderbird.desktop', 'org.telegram.desktop.desktop', 'vscodium.desktop', 'kitty.desktop', 'com.shellyorg.shelly.desktop', 'steam.desktop', 'org.gnome.SystemMonitor.desktop']"
 }
 
 apply_settings() {
