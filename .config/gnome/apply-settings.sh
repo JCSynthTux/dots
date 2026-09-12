@@ -76,7 +76,7 @@ configure_custom_bindings() {
         "[$(printf "'%s'," "${bindings[@]}" | sed 's/,$//')]"
 
     set_custom_binding kitty "Launch Kitty" "kitty" "<Super>Return"
-    set_custom_binding ranger "File manager" "kitty -T ranger -e ranger" "<Super>e"
+    set_custom_binding ranger "File manager" "nautilus" "<Super>e"
     set_custom_binding codium "VSCodium" "codium" "<Super>t"
     set_custom_binding librewolf "LibreWolf" "librewolf" "<Super>w"
     set_custom_binding btop "System monitor" "kitty -e btop" "<Control><Shift>Escape"
