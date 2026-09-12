@@ -93,6 +93,9 @@ install_packages() {
     local packages=(
         bitwarden
         brightnessctl
+        eog
+        eog-docs
+        eog-plugins
         gdm
         gnome-bluetooth-3.0
         gnome-shell
