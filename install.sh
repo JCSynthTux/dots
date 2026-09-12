@@ -91,23 +91,32 @@ install_packages() {
     info "Installing repository packages..."
 
     local packages=(
+        bitwarden
         brightnessctl
         gdm
+        gnome-bluetooth-3.0
         gnome-shell
         gnome-shell-extension-dash-to-dock
         gnome-shell-extension-vitals
         gnome-shell-extensions
+        gnome-system-monitor
         gnome-themes-extra
+        gvfs
+        gvfs-nfs
+        gvfs-smb
         kitty
         librewolf
         noto-fonts
+        onlyoffice-bin
+        orchis-theme
         otf-font-awesome
+        papirus-icon-theme
         pavucontrol
-        pipewire
-        playerctl
+        # pipewire
         qt6ct
         ttf-font-awesome
         ttf-jetbrains-mono-nerd
+        vimix-cursors
         vscodium
         wireplumber
         zsh
