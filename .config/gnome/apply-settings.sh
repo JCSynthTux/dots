@@ -151,7 +151,7 @@ configure_blur_my_shell() {
     set_setting "$schema" rounded-blur-found true
     set_setting "$schema" settings-version 2
     set_setting "$schema" sigma 30
-    set_setting "$schema" pipelines "{'pipeline_default': {'name': <'Default'>, 'effects': <[<{'type': <'native_static_gaussian_blur'>, 'id': <'effect_000000000000'>, 'params': <{'radius': <30>, 'brightness': <0.6>}>}>]>}, 'pipeline_default_rounded': {'name': <'Default rounded'>, 'effects': <[<{'type': <'native_static_gaussian_blur'>, 'id': <'effect_000000000001'>, 'params': <{'radius': <30>, 'brightness': <0.6>}>}>, <{'type': <'corner'>, 'id': <'effect_000000000002'>, 'params': <{'radius': <24>, 'corners_bottom': <true>, 'corners_top': <true>}>}>]>}}"
+    set_setting "$schema" pipelines "{'pipeline_default': {'name': <'Default'>, 'effects': <[<{'type': <'native_static_gaussian_blur'>, 'id': <'effect_000000000000'>, 'params': <{'radius': <30>, 'brightness': <0.6>}>}>]>}, 'pipeline_default_rounded': {'name': <'Default rounded'>, 'effects': <[<{'type': <'native_static_gaussian_blur'>, 'id': <'effect_000000000001'>, 'params': <{'radius': <30>, 'brightness': <0.6>}>}>, <{'type': <'corner'>, 'id': <'effect_000000000002'>, 'params': <{'radius': <24>, 'corners_bottom': <true>, 'corners_top': <true>}>}>]>}, 'pipeline_71815333033373': {'name': <'Default top rounded'>, 'effects': <[<{'type': <'native_static_gaussian_blur'>, 'id': <'effect_99053595495978'>, 'params': <@a{sv} {}>}>, <{'type': <'corner'>, 'id': <'effect_55421307991030'>, 'params': <{'corners_bottom': <true>, 'corners_top': <false>}>}>]>}}"
 
     schema=org.gnome.shell.extensions.blur-my-shell.appfolder
     set_setting "$schema" blur true
@@ -197,7 +197,7 @@ configure_blur_my_shell() {
     set_setting "$schema" override-background true
     set_setting "$schema" pipeline "'pipeline_default_rounded'"
     set_setting "$schema" sigma 30
-    set_setting "$schema" static-blur true
+    set_setting "$schema" static-blur false
     set_setting "$schema" style-dash-to-dock 0
     set_setting "$schema" unblur-in-overview false
 
@@ -223,7 +223,7 @@ configure_blur_my_shell() {
     set_setting "$schema" noise-lightness 0.0
     set_setting "$schema" pipeline "'pipeline_default'"
     set_setting "$schema" sigma 30
-    set_setting "$schema" style-components 1
+    set_setting "$schema" style-components 3
 
     schema=org.gnome.shell.extensions.blur-my-shell.panel
     set_setting "$schema" blur true
@@ -236,9 +236,9 @@ configure_blur_my_shell() {
     set_setting "$schema" noise-lightness 0.0
     set_setting "$schema" override-background true
     set_setting "$schema" override-background-dynamically false
-    set_setting "$schema" pipeline "'pipeline_default_rounded'"
+    set_setting "$schema" pipeline "'pipeline_71815333033373'"
     set_setting "$schema" sigma 30
-    set_setting "$schema" static-blur true
+    set_setting "$schema" static-blur false
     set_setting "$schema" style-panel 0
     set_setting "$schema" unblur-in-overview true
 
