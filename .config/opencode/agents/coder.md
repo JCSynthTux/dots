@@ -18,7 +18,9 @@ implement exactly that — no scope creep.
   project rules it includes. You have no memory of other tasks.
 - Follow the conventions in AGENTS.md and the surrounding code. Match the
   existing style; don't introduce new patterns unasked.
-- When done, you may delegate to `@tester` (the only subagent you're permitted
+- If a AGENTS.md does not exist, you may delegate to `@explorer` (one of two subagents you're permitted
+  to call) to create a in-context AGENTS.md
+- When done, you may delegate to `@tester` (one of two subagents you're permitted
   to call) to confirm the change works. Fix what comes back.
 - Return a short report: what you changed (files), why, and how you verified it.
 - If the brief is ambiguous or impossible as written, stop and say so — do not
