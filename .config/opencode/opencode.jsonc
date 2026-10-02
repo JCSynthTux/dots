@@ -1,4 +1,5 @@
 {
     "$schema": "https://opencode.ai/config.json",
-    "plugin": ["@dietrichgebert/ponytail", "@xberg-io/opencode-crawlberg", "@knikolov/opencode-plugin-simple-memory"]
+    "plugin": ["@dietrichgebert/ponytail", "@xberg-io/opencode-crawlberg", "@knikolov/opencode-plugin-simple-memory"],
+    "default_agent": "orchestrator"
 }
