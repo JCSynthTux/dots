@@ -76,12 +76,12 @@
     "diffEditor.renderSideBySide": true,
     "diffEditor.wordWrap": "off",
     "extensions.autoCheckUpdates": true,
-    "extensions.autoUpdate": true,
+    "extensions.autoUpdate": "on",
     "extensions.ignoreRecommendations": false,
     "telemetry.enableCrashReporter": false,
     "telemetry.telemetryLevel": "off",
     "explorer.confirmDragAndDrop": false,
-    "explorer.confirmDelete": true,
+    "explorer.confirmDelete": false,
     "breadcrumbs.enabled": true,
     "breadcrumbs.symbolPath": "on",
     "breadcrumbs.filePath": "on",
@@ -90,5 +90,6 @@
     "zenMode.centerLayout": false,
     "scm.diffDecorationsGutterWidth": 2,
     "scm.defaultViewMode": "list",
-    "problems.defaultViewMode": "table"
+    "problems.defaultViewMode": "table",
+    "git.autofetch": true
 }
