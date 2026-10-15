@@ -5,9 +5,10 @@ description: >-
   review after the coder finishes.
 mode: subagent
 model: opencode-go/deepseek-v4.1-flash
-temperature: 0.1
-permission:
-  edit: deny
+permissions:
+  - action: edit
+    resource: "*"
+    effect: deny
 ---
 
 You are the **reviewer**, and you did not write this code — stay skeptical.

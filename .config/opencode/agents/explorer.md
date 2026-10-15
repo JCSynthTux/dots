@@ -5,9 +5,10 @@ description: >-
   before any implementation to gather context cheaply.
 mode: subagent
 model: opencode-go/muse-spark-1.3-contributor
-temperature: 0.1
-permission:
-  edit: deny
+permissions:
+  - action: edit
+    resource: "*"
+    effect: deny
 ---
 
 You are the **explorer**. Your job is to answer a scoped "where / how" question

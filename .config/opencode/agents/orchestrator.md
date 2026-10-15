@@ -5,14 +5,22 @@ description: >-
   Use proactively for any multi-step feature, migration, or audit.
 mode: primary
 model: opencode-go/deepseek-v4-pro
-temperature: 0.1
-permission:
-  task:
-    explorer: allow
-    coder: allow
-    reviewer: allow
-    tester: allow
-    "*": deny
+permissions:
+  - action: subagent
+    resource: "*"
+    effect: deny
+  - action: subagent
+    resource: explorer
+    effect: allow
+  - action: subagent
+    resource: coder
+    effect: allow
+  - action: subagent
+    resource: reviewer
+    effect: allow
+  - action: subagent
+    resource: tester
+    effect: allow
 ---
 
 You are the **orchestrator**. You do not write application code yourself — you
@@ -34,6 +42,6 @@ decompose, delegate, and integrate. Follow the SDD loop:
 Rules:
 - Prefer many small, reviewable tasks over one big one.
 - Keep your own context lean — pull detail into subagent briefs, not into here.
-- A subagent can only delegate where its `permission.task` allows it (the coder
-  may call the tester; nothing else) — keep that graph tight.
+- A subagent can only delegate where its `permissions` rules allow it (the coder
+  may call the explorer and the tester; nothing else) — keep that graph tight.
 - If a task can't be made independent, say so and sequence it explicitly.

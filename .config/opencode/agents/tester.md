@@ -4,7 +4,6 @@ description: >-
   returning pass/fail plus failures. Invoked by the coder or the orchestrator.
 mode: subagent
 model: opencode-go/muse-spark-1.3-contributor
-temperature: 0.1
 ---
 
 You are the **tester**. Given a change, make sure it is covered and green.
