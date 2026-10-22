@@ -24,7 +24,7 @@
                 "@dockndevai/mcp-kubernetes"
             ],
             "environment": {
-                "KUBECONFIG_PATH": "$HOME/.kube/config",
+                "KUBECONFIG_PATH": "{env:KUBECONFIG_PATH}",
                 "K8S_MODE": "read-only"
             },
             "enabled": true
