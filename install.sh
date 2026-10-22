@@ -30,59 +30,6 @@ EOF
     exit 0
 }
 
-link_opencode_config() {
-    # opencode stores runtime state (node_modules/, cli.json, service.json,
-    # machine-only skills) next to the config, so link the tracked files
-    # individually instead of symlinking the whole directory.
-    local src_dir="$DOTS_DIR/.config/opencode"
-    local dst_dir="$CONFIG_DIR/opencode"
-    local items=(opencode.jsonc tui.json agents themes)
-    local item src dst src_real dst_real bak
-
-    # An existing directory-level link already exposes the tracked files;
-    # re-linking would resolve $src and $dst to the same file and the backup
-    # step would then move the tracked file out of the repo.
-    if [ -L "$dst_dir" ]; then
-        if [ "$(readlink -f "$dst_dir")" = "$(readlink -f "$src_dir")" ]; then
-            ok ".config/opencode already links to the repo — nothing to do"
-        else
-            warn "$dst_dir is a symlink to $(readlink -f "$dst_dir") — leaving it alone"
-        fi
-        return
-    fi
-
-    mkdir -p "$dst_dir"
-
-    for item in "${items[@]}"; do
-        src="$src_dir/$item"
-        dst="$dst_dir/$item"
-        src_real="$(readlink -f "$src")"
-        dst_real="$(readlink -f "$dst" 2>/dev/null || true)"
-
-        if [ -n "$dst_real" ] && [ "$dst_real" = "$src_real" ]; then
-            ok ".config/opencode/$item already linked"
-            continue
-        fi
-        if [ -e "$dst" ] && [ "$src" -ef "$dst" ]; then
-            ok ".config/opencode/$item already linked"
-            continue
-        fi
-
-        if [ -e "$dst" ] || [ -L "$dst" ]; then
-            bak="$dst.bak.$(date +%s)"
-            if [ -L "$dst" ]; then
-                warn "Displacing foreign symlink $dst -> ${dst_real:-<dangling>}"
-            else
-                warn "Backing up existing $dst -> $bak"
-            fi
-            mv "$dst" "$bak"
-        fi
-
-        ln -sfn "$src" "$dst"
-        ok "Linked .config/opencode/$item"
-    done
-}
-
 link_dotfiles() {
     info "Linking dotfiles..."
 
@@ -92,11 +39,6 @@ link_dotfiles() {
         name="$(basename "$dir")"
         src="$dir"
         dst="$CONFIG_DIR/$name"
-
-        if [ "$name" = "opencode" ]; then
-            link_opencode_config
-            continue
-        fi
 
         if [ -e "$dst" ] && [ ! -L "$dst" ]; then
             warn "Backing up existing $dst -> ${dst}.bak"
