@@ -24,7 +24,7 @@
                 "@dockndevai/mcp-kubernetes"
             ],
             "environment": {
-                "KUBECONFIG_PATH": "{env:KUBECONFIG_PATH}",
+                "KUBECONFIG_PATH": "$HOME/.kube/config",
                 "K8S_MODE": "read-only"
             },
             "enabled": true
@@ -37,11 +37,9 @@
                 "mcp-searxng"
             ],
             "environment": {
-                // SEARXNG_URL must include basic-auth userinfo: https://agent:<password>@search.thetomie.com
-                // Unset resolves to an empty string and searxng searches fail. NEVER commit the value to
-                // this repo (.zshrc is tracked here too). Use ~/.config/environment.d/90-searxng.conf for
-                // GNOME/session launches, or a secret manager / untracked file sourced from ~/.zshrc.
-                "SEARXNG_URL": "{env:SEARXNG_URL}"
+                // Basic-auth URL read from an untracked file OUTSIDE this repo (chmod 600, no trailing newline).
+                // {file:} works regardless of how opencode is launched — no shell env inheritance needed.
+                "SEARXNG_URL": "{file:~/.secrets/searxng-url}"
             },
             "enabled": true
         }
