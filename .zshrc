@@ -123,3 +123,7 @@ export SSH_AUTH_SOCK="$HOME/.bitwarden-ssh-agent.sock"
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
+# Local secrets — sourced from a file OUTSIDE this dotfiles repo.
+# ~/.zshrc.local is NOT tracked; NEVER put secrets in tracked files here.
+[[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
