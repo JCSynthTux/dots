@@ -29,19 +29,27 @@
             },
             "enabled": true
         },
-        "searxng": {
-            "type": "local",
-            "command": [
-                "npx",
-                "-y",
-                "mcp-searxng"
-            ],
-            "environment": {
-                // Basic-auth URL read from an untracked file OUTSIDE this repo (chmod 600, no trailing newline).
-                // {file:} works regardless of how opencode is launched — no shell env inheritance needed.
-                "SEARXNG_URL": "{file:~/.secrets/searxng-url}"
-            },
-            "enabled": true
+        // searxng lives in the v2 "servers" map on purpose: that is the only
+        // place a "codemode" flag survives config normalization (legacy
+        // top-level entries are re-encoded and silently drop unknown keys).
+        // codemode:false registers the server's tools natively instead of
+        // routing them through the `execute` tool, so agents that deny
+        // `execute` (e.g. explorer) still get them in their tool catalog.
+        "servers": {
+            "searxng": {
+                "type": "local",
+                "command": [
+                    "npx",
+                    "-y",
+                    "mcp-searxng@2.7.0"
+                ],
+                "environment": {
+                    // Basic-auth URL read from an untracked file OUTSIDE this repo (chmod 600, no trailing newline).
+                    // {file:} works regardless of how opencode is launched — no shell env inheritance needed.
+                    "SEARXNG_URL": "{file:~/.secrets/searxng-url}"
+                },
+                "codemode": false
+            }
         }
     }
 }
