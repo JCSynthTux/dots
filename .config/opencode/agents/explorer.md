@@ -27,6 +27,15 @@ permissions:
   - action: websearch
     resource: "*"
     effect: allow
+  # searxng MCP tools resolve to actions named "<server>_<tool>", e.g.
+  # searxng_searxng_web_search. The wildcard covers the prefixed tools; the
+  # url reader is listed explicitly so it survives a narrower future glob.
+  - action: searxng_*
+    resource: "*"
+    effect: allow
+  - action: searxng_web_url_read
+    resource: "*"
+    effect: allow
 ---
 
 You are the **explorer**. Your job is to answer a scoped "where / how" question

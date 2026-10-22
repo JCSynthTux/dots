@@ -37,6 +37,15 @@ permissions:
   - action: websearch
     resource: "*"
     effect: deny
+  # searxng MCP tools resolve to actions named "<server>_<tool>", e.g.
+  # searxng_searxng_web_search. Last matching rule wins, so these follow the
+  # blanket allow that every agent starts with.
+  - action: searxng_*
+    resource: "*"
+    effect: deny
+  - action: searxng_web_url_read
+    resource: "*"
+    effect: deny
 ---
 
 You are the **orchestrator**. You do **no hands-on work**: never write or edit
