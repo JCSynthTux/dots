@@ -37,7 +37,11 @@
                 "mcp-searxng"
             ],
             "environment": {
-                "SEARXNG_URL": ""
+                // SEARXNG_URL must include basic-auth userinfo: https://agent:<password>@search.thetomie.com
+                // Unset resolves to an empty string and searxng searches fail. NEVER commit the value to
+                // this repo (.zshrc is tracked here too). Use ~/.config/environment.d/90-searxng.conf for
+                // GNOME/session launches, or a secret manager / untracked file sourced from ~/.zshrc.
+                "SEARXNG_URL": "{env:SEARXNG_URL}"
             },
             "enabled": true
         }
