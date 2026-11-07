@@ -1,0 +1,37 @@
+# llama-swap: dynamic load/unload proxy for llama-server.
+# One model in VRAM at a time; a request whose `model` doesn't match the
+# resident model triggers a hot-swap (kill + start the matching cmd).
+# Listening address is set by the systemd unit's `--listen` flag.
+healthCheckTimeout: 240
+
+models:
+  qwen2.5-coder-14b:
+    cmd: >
+      /home/jchroback/.local/bin/llama-server
+      --host 127.0.0.1
+      --port ${PORT}
+      --model /home/jchroback/.local/share/models/Qwen2.5-Coder-14B-Instruct-Q4_K_M.gguf
+      --ctx-size 32768
+      --n-gpu-layers 99
+      --flash-attn auto
+      --cache-type-k q8_0
+      --cache-type-v q8_0
+      --threads 8
+    ttl: 900
+    aliases:
+      - coder
+      - qwen2.5-coder
+
+  qwen3-8b:
+    cmd: >
+      /home/jchroback/.local/bin/llama-server
+      --host 127.0.0.1
+      --port ${PORT}
+      --model /home/jchroback/.local/share/models/Qwen3-8B-Q4_K_M.gguf
+      --ctx-size 16384
+      --n-gpu-layers 99
+      --flash-attn auto
+      --cache-type-k q8_0
+      --cache-type-v q8_0
+      --threads 8
+    ttl: 3600

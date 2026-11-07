@@ -102,3 +102,17 @@ Catppuccin Mocha throughout — terminal, editor, shell UI, window borders, and 
 - **oh-my-zsh** — Zsh framework
 - **JetbrainsMono Nerd Font** — Monospace font
 - **Bitwarden** — Password manager with SSH agent
+
+## Local GPU serving (llama.cpp)
+
+OpenCode can also run fully local: `llama-server` (llama.cpp) behind
+**llama-swap**, which keeps one model resident and hot-swaps per request on an
+RX 9060 XT (16 GB, RDNA4).
+
+The local variant ships as inert copies — `opencode.local-gpu.jsonc` and
+`agents-local-gpu/` — swapped in with two `mv` pairs; the live `opencode.jsonc`
+and `agents/` keep the cloud models. Build, model downloads, the VRAM budget,
+and the exact swap recipe live in `.config/llama-swap/README.md`; the unit is
+`.config/systemd/user/llama-swap.service`.
+
+Kept as copies until the RX 9060 XT is in hand.
