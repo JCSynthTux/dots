@@ -12,7 +12,9 @@ Agents: `orchestrator`, `coder`, `reviewer` → `qwen2.5-coder-14b`; `explorer`,
 the copies below write straight into the repo. The local variant lives in two
 inert paths — `opencode.local-gpu.jsonc` and `agents-local-gpu/` — that OpenCode
 never reads: it only scans the fixed `opencode.jsonc` filename and the `agents/`
-dir.
+dir. They are manual snapshots of the cloud setup: when you change your cloud
+config or agent definitions, mirror those edits into `opencode.local-gpu.jsonc`
+and `agents-local-gpu/` (keeping the local model pins and `providers` block).
 
 **Bring-up (once, from the repo root).** This symlinks the new
 `~/.config/llama-swap/` dir into `$HOME/.config`; without it the unit's
@@ -22,7 +24,10 @@ dir.
 ./install.sh --link
 ```
 
-**Switch to local.** Quit the opencode TUI first, then from the repo root:
+**Switch to local.** Quit the opencode TUI first, and commit or stash any
+uncommitted changes under `.config/opencode/` — the `cp` overwrites the live
+files, and switching back restores the tracked HEAD versions, not your edits.
+Then from the repo root:
 
 ```bash
 cp .config/opencode/opencode.local-gpu.jsonc .config/opencode/opencode.jsonc
@@ -50,8 +55,13 @@ Run `/reload` after switching back too.
   in that state: switch back to cloud first, which restores the tracked cloud
   versions via `git checkout --`.
 - If anything looks wrong while swapped, quit the TUI and run
-  `git checkout -- .config/opencode/`; that always returns to the tracked cloud
-  state.
+  `git checkout -- .config/opencode/opencode.jsonc .config/opencode/agents/`;
+  that resets only the swap targets and returns them to the tracked cloud state.
+  If a swapped state was accidentally committed, `git revert` that commit
+  instead.
+- While in local mode, edit `opencode.local-gpu.jsonc` and `agents-local-gpu/`
+  (then re-run the two `cp` lines) rather than the live swapped files, whose
+  edits are discarded on switch-back.
 - Both blocks are idempotent: re-running either leaves the same end state.
 
 The unit is `ConditionPathExists`-guarded on `~/.config/llama-swap/config.yaml`,
