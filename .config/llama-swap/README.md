@@ -174,17 +174,21 @@ presets**, so a per-slot flag always wins over the ini.
 
 The ini needs a recent llama.cpp with system-config support (PR #26118; current
 AUR `-git` builds qualify). Older builds silently ignore the file, which drops
-the `q8_0` KV caches back to f16 — and f16 KV can OOM at 32K. Verify the startup
-log instead of assuming: the `llama_kv_cache` line should read `K (q8_0)` /
-`V (q8_0)`, and all layers should be offloaded (`offloaded 99/99`, or
-`n_gpu_layers = 99`):
+the `q8_0` KV caches back to f16 — and f16 KV can OOM at 32K. Verify the upstream
+startup log instead of assuming: the `llama_kv_cache` line should read
+`K (q8_0)` / `V (q8_0)`, and all layers should be offloaded (`offloaded 99/99`,
+or `n_gpu_layers = 99`):
 
 ```bash
-journalctl --user -u llama-swap -f | grep -E 'q8_0|offloaded'
+curl -Ns http://127.0.0.1:8080/logs/stream/upstream | grep -E 'q8_0|offloaded'
 ```
 
-(Or watch the `/logs` stream.) If the line shows f16 or fewer layers, move those
-flags back into the `cmd` blocks.
+Those lines come from the upstream llama-server, not the llama-swap proxy:
+`journalctl --user -u llama-swap -f` only carries them when
+`logToStdout: proxy,upstream` is set in `.config/llama-swap/config.yaml` (this
+repo leaves the default `proxy`), whereas the `/logs/stream/upstream` endpoint
+works regardless — see llama-swap's `/logs` docs. If the line shows f16 or fewer
+layers, the ini was ignored and the flags must move back into the `cmd` blocks.
 
 Shell exports live in `.zshrc`: `LLAMA_CACHE=$HOME/.cache/llama.cpp` pins the
 cache llama.cpp uses for its own `-hf` downloads, while this guide's
@@ -232,9 +236,17 @@ actually emits tool calls in OpenCode: small-model tool calling is binary —
 fitting in VRAM is not the same as working.
 
 Finally, confirm the first llama-server start shows the `llama_kv_cache` line with
-`K (q8_0)` / `V (q8_0)` and all layers offloaded (`offloaded 99/99`). The shared
-`config.ini` is only safe to rely on once that check passes — an ignored ini means
-f16 KV, which can OOM at 32K.
+`K (q8_0)` / `V (q8_0)` and all layers offloaded (`offloaded 99/99`):
+
+```bash
+curl -Ns http://127.0.0.1:8080/logs/stream/upstream | grep -E 'q8_0|offloaded'
+```
+
+The shared `config.ini` is only safe to rely on once that check passes — a missing
+`K (q8_0)`/`V (q8_0)` or a partial offload means the ini was ignored (build too
+old), leaving f16 KV and an OOM at 32K. Use the upstream endpoint: journalctl only
+shows these lines when `logToStdout: proxy,upstream` is set, which this config
+does not.
 
 ## VRAM reality (16 GB)
 
