@@ -4,7 +4,7 @@ description: >-
   it, and iterates with the tester until green, then commits with a conventional
   commit. May spawn the explorer and the tester. Never pushes.
 mode: subagent
-model: local/qwen2.5-coder-14b
+model: local/glm-4.7-flash
 permissions:
   - action: subagent
     resource: "*"

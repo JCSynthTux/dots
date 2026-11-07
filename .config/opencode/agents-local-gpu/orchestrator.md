@@ -5,7 +5,7 @@ description: >-
   until each task ships. Does no hands-on work itself — reads and delegates only.
   Use proactively for any multi-step feature, migration, or audit.
 mode: primary
-model: local/qwen2.5-coder-14b
+model: local/qwen3.8-27b
 permissions:
   - action: subagent
     resource: "*"

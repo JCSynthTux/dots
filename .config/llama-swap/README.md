@@ -1,28 +1,42 @@
 # Local GPU serving (llama.cpp + llama-swap)
 
-OpenCode → **llama-swap** → **llama-server**. OpenCode is a pure HTTP client;
-llama-swap keeps **one model in VRAM at a time** and hot-swaps (kill + start)
-when a request names a different model. Target: RX 9060 XT, 16 GB, RDNA4 (gfx1200/gfx1201).
+OpenCode → **llama-swap** → **llama-server**. OpenCode is a pure HTTP client and
+never manages model processes; llama-swap keeps **one model in VRAM at a time**
+and hot-swaps (kill + start) when a request names a different model. Target: RX
+9060 XT, 16 GB, Navi 44 = gfx1200.
 
-Agents: `orchestrator`, `coder`, `reviewer` → `qwen2.5-coder-14b`; `explorer`, `tester` → `qwen3-8b`.
+## Fleet: role-specialized, three models
+
+| Role | Model | Quant | Weights | ctx | ttl |
+|------|-------|-------|---------|-----|-----|
+| orchestrator | `qwen3.8-27b` | UD-Q3_K_XL | ~13.2 GB | 16384 | 1800 s |
+| coder, explorer, tester | `glm-4.7-flash` | UD-Q4_K_XL | ~13 GB | 32768 | 3600 s |
+| reviewer | `devstral-24b` | Q3_K_M | ~11.5 GB | 24576 | 1800 s |
+
+**Swap behaviour:** phase-boundary swaps only — orchestrator → coder → reviewer.
+`explorer` and `tester` ride `glm-4.7-flash`, the coder's model, so subagent
+calls made mid-run never trigger a swap.
 
 ## Switching: copy-in-place + git restore
 
-`~/.config/opencode` is symlinked into this repo (via `install.sh --link`), so
-the copies below write straight into the repo. The local variant lives in two
-inert paths — `opencode.local-gpu.jsonc` and `agents-local-gpu/` — that OpenCode
-never reads: it only scans the fixed `opencode.jsonc` filename and the `agents/`
-dir. They are manual snapshots of the cloud setup: when you change your cloud
-config or agent definitions, mirror those edits into `opencode.local-gpu.jsonc`
-and `agents-local-gpu/` (keeping the local model pins and `providers` block).
+`~/.config/opencode` must be symlinked into this repo, so the copies below write
+straight into it. The local variant lives in two inert paths —
+`opencode.local-gpu.jsonc` and `agents-local-gpu/` — that OpenCode never reads:
+it only scans the fixed `opencode.jsonc` filename and the `agents/` dir. They are
+manual snapshots of the cloud setup: when you change your cloud config or agent
+definitions, mirror those edits into `opencode.local-gpu.jsonc` and
+`agents-local-gpu/` (keeping the local model pins and `providers` block).
 
-**Bring-up (once, from the repo root).** This symlinks the new
-`~/.config/llama-swap/` dir into `$HOME/.config`; without it the unit's
-`ConditionPathExists` silently skips:
+**Bring-up (once, from the repo root).** Symlink the new dirs into `$HOME/.config`
+by hand. Without the `llama-swap` link the unit's `ConditionPathExists` silently
+skips; without the `opencode` link the copy-swap never reaches the live system:
 
 ```bash
-./install.sh --link
+ln -s ~/Projects/dots/.config/llama-swap ~/.config/llama-swap
 ```
+
+Use the same pattern for `~/.config/systemd/user` and `~/.config/opencode` if
+they are not already symlinked into this repo.
 
 **Switch to local.** Quit the opencode TUI first, and commit or stash any
 uncommitted changes under `.config/opencode/` — the `cp` overwrites the live
@@ -35,9 +49,10 @@ cp .config/opencode/agents-local-gpu/*.md .config/opencode/agents/
 systemctl --user enable --now llama-swap
 ```
 
-Start opencode and check `/agents`: orchestrator/coder/reviewer should show
-`local/qwen2.5-coder-14b`, explorer/tester `local/qwen3-8b`; `/models` should
-list the `local/...` models. If you did not quit first, run `/reload`.
+Start opencode and check `/agents`: `orchestrator` should show
+`local/qwen3.8-27b`, `coder`/`explorer`/`tester` `local/glm-4.7-flash`, and
+`reviewer` `local/devstral-24b`; `/models` should list the `local/...` models. If
+you did not quit first, run `/reload`.
 
 **Switch back to cloud.** Quit the TUI, then from the repo root:
 
@@ -69,27 +84,39 @@ so it skips cleanly wherever that config is absent. With copy-in-place the confi
 keeps existing while you are on cloud, so disabling the unit is about stopping
 the proxy and freeing VRAM, not avoiding a dangling symlink.
 
-## 1. Install llama.cpp (RDNA4)
+## 1. Build llama.cpp (RDNA4)
 
-Needs **ROCm ≥ 7.0.2** for gfx1200/gfx1201; CachyOS ships a recent ROCm.
-
-```bash
-cmake -B build -DGGML_HIP=ON -DCMAKE_BUILD_TYPE=Release -DAMDGPU_TARGETS=gfx1200
-cmake --build build --config Release -j"$(nproc)"
-install -Dm755 build/bin/llama-server ~/.local/bin/llama-server
-```
-
-Vulkan fallback — benchmark both on this card, some AMD setups favor Vulkan:
+Build both backends and A/B them. **Default to Vulkan for GGUF on Linux**, though
+some RDNA4 setups favour ROCm; ROCm ≥ 7.0.2 is needed for gfx1200:
 
 ```bash
-cmake -B build-vk -DGGML_VULKAN=ON -DCMAKE_BUILD_TYPE=Release
-cmake --build build-vk --config Release -j"$(nproc)"
-install -Dm755 build-vk/bin/llama-server ~/.local/bin/llama-server
+cmake -B build-vulkan -DGGML_VULKAN=ON -DCMAKE_BUILD_TYPE=Release
+cmake --build build-vulkan --config Release -j"$(nproc)"
+
+cmake -B build-rocm -DGGML_HIP=ON -DGPU_TARGETS=gfx1200 -DCMAKE_BUILD_TYPE=Release
+cmake --build build-rocm --config Release -j"$(nproc)"
 ```
+
+Install whichever wins:
+
+```bash
+install -Dm755 build-vulkan/bin/llama-server ~/.local/bin/llama-server
+install -Dm755 build-vulkan/bin/llama-bench  ~/.local/bin/llama-bench
+```
+
+Benchmark the same GGUF with each build's `llama-bench` and compare:
+
+```bash
+llama-bench -ngl 999 -fa 1 -p 512 -n 128 -r 5
+```
+
+Confirm the target with `rocminfo | grep gfx`: the 9060 XT is `gfx1200`, while
+`gfx1201` is the 9070 family — do not mix them up when setting `-DGPU_TARGETS`.
 
 The `q8_0` KV caches need flash-attention; if llama-server aborts with
 "quantized V cache requires flash_attn", your build lacks FA support (common on
-Vulkan): use an FA-capable build, or set `--cache-type-v f16` and lower `--ctx-size`.
+some Vulkan builds): use an FA-capable build, or set `--cache-type-v f16` and
+lower `--ctx-size`.
 
 ## 2. Install llama-swap
 
@@ -104,15 +131,15 @@ loopback only, since otherwise it binds all interfaces with no auth.
 
 ## 3. Download models
 
-~8.4 GiB + ~5 GiB of weights; adjust `--model` paths if stored elsewhere.
-
 ```bash
 mkdir -p ~/.local/share/models
-hf download bartowski/Qwen2.5-Coder-14B-Instruct-GGUF \
-  Qwen2.5-Coder-14B-Instruct-Q4_K_M.gguf --local-dir ~/.local/share/models
-hf download Qwen/Qwen3-8B-GGUF \
-  Qwen3-8B-Q4_K_M.gguf --local-dir ~/.local/share/models
+hf download unsloth/Qwen3.8-27B-GGUF --include "*UD-Q3_K_XL*" --local-dir ~/.local/share/models
+hf download unsloth/GLM-4.7-Flash-GGUF --include "*UD-Q4_K_XL*" --local-dir ~/.local/share/models
+hf download unsloth/Devstral-Small-2-24B-Instruct-2512-GGUF --include "*Q3_K_M*" --local-dir ~/.local/share/models
 ```
+
+Verify the exact filenames on the HF repos at download time — Unsloth quant
+naming varies — then match them to the `--model` paths in `config.yaml`.
 
 ## 4. Enable
 
@@ -121,16 +148,37 @@ systemctl --user daemon-reload && systemctl --user enable --now llama-swap
 journalctl --user -u llama-swap -f   # watch loads/swaps
 ```
 
+## Smoke test (mandatory)
+
+Vendor scores are full-precision claims. Before trusting the fleet, run the same
+refactor → fix → patch task against `glm-4.7-flash`, `qwen3.8-27b` and
+`devstral-24b` on a real repo and compare the results. Also verify each model
+actually emits tool calls in OpenCode: small-model tool calling is binary —
+fitting in VRAM is not the same as working.
+
 ## VRAM reality (16 GB)
 
-The 14B at 32k ≈ 8.4 GiB weights + ~3 GiB q8_0 KV + compute buffers ≈ 12 GiB —
-comfortable. The 8B ≈ 5 GiB weights + ~1.5 GiB KV ≈ 7 GiB. Only one model is
-resident, so subagents on *different* models serialize behind a swap costing a
-few seconds — hence `explorer`/`tester` share the 8B, the rest share the 14B.
+RX 9060 XT: 16 GB, Navi 44 = gfx1200. Reserve **1.0–1.5 GB for the GNOME
+desktop** — never budget to 16.0 GB.
 
-The 8B's long `ttl` only survives idle gaps between explorer/tester calls; any
-14B request still evicts it (single slot) and pays the reload. Raising context or
-dropping the `q8_0` caches risks OOM at 15.9 GiB — keep `limit.context` ≤ `--ctx-size`.
+| Model | Weights | KV at default ctx | Verdict |
+|-------|---------|-------------------|---------|
+| `qwen3.8-27b` | ~13.2 GB | q8_0 @16K | ~15 GB total — **tight** |
+| `glm-4.7-flash` | ~13 GB | q8_0 @32K | tight; MoE keeps compute cheap |
+| `devstral-24b` | ~11.5 GB | 160 KiB/token f16 @24K | 32K is the hard ceiling |
 
-Stretch only: Qwen3-Coder-30B-A3B Q4 is borderline (~18 GB) — solo slot, small
-context at best. Qwen2.5-Coder-14B is the 16 GB sweet spot; 70B-class is infeasible.
+OOM ladders, in order:
+
+- `qwen3.8-27b`: 16K → 12K → 8K context, or drop the quant to `IQ3_XS`.
+- `glm-4.7-flash`: 32K → 24K → 16K context.
+- `devstral-24b`: 24K → 16K (32K is the hard ceiling; at 160 KiB/token the KV is
+  the first thing to give).
+
+`--parallel 1` is deliberate: llama-server divides `--ctx-size` across parallel
+slots, so a higher value multiplies the KV footprint for no benefit here.
+
+**ReBAR must be enabled** for the Vulkan backend — without it, large GGUF
+allocations can fail or thrash. Check `lspci -vv` for `Resizable BAR: enabled`.
+
+Only one model is resident, so any request on a *different* model waits for a
+swap. That is why `explorer` and `tester` share the coder's model.

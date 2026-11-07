@@ -5,7 +5,7 @@ description: >-
   Never edits or runs commands. Use proactively before any implementation.
   For any web research, use only the searxng MCP search tools.
 mode: subagent
-model: local/qwen3-8b
+model: local/glm-4.7-flash
 permissions:
   - action: edit
     resource: "*"

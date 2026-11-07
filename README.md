@@ -6,11 +6,11 @@ Personal dotfiles for Arch Linux / CachyOS — Hyprland + Noctalia desktop, Catp
 
 ```bash
 git clone git@github.com:JCSynthTux/dots.git ~/dots
-cd ~/dots
-./install.sh --all
 ```
 
-Flags: `--link` (symlink configs), `--packages` (install deps), `--fonts` (JetBrainsMono Nerd Font), `--all` (everything).
+Then symlink the config dirs you use into `~/.config`, e.g.
+`ln -s ~/dots/.config/kitty ~/.config/kitty`. The local-GPU extras document their
+own symlinks in `.config/llama-swap/README.md`.
 
 ## Overview
 
@@ -107,12 +107,15 @@ Catppuccin Mocha throughout — terminal, editor, shell UI, window borders, and 
 
 OpenCode can also run fully local: `llama-server` (llama.cpp) behind
 **llama-swap**, which keeps one model resident and hot-swaps per request on an
-RX 9060 XT (16 GB, RDNA4).
+RX 9060 XT (16 GB, RDNA4). The fleet is role-specialized across three models —
+Qwen3.8-27B for orchestration, GLM-4.7-Flash for coding/exploring/testing, and
+Devstral Small 2 24B for review — so swaps land only on phase boundaries.
 
 The local variant ships as inert copies — `opencode.local-gpu.jsonc` and
 `agents-local-gpu/` — copied in place over the tracked cloud files to activate,
 and restored with `git checkout --` to go back. Build, model downloads, the VRAM
-budget, and the exact recipe live in `.config/llama-swap/README.md`; the unit is
+budget, the smoke test, and the exact recipe live in
+`.config/llama-swap/README.md`; the unit is
 `.config/systemd/user/llama-swap.service`.
 
 Kept as copies until the RX 9060 XT is in hand.
