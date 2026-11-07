@@ -127,3 +127,7 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # Local secrets — sourced from a file OUTSIDE this dotfiles repo.
 # ~/.zshrc.local is NOT tracked; NEVER put secrets in tracked files here.
 [[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
+
+# llama.cpp: deterministic HF download cache + optional HF token for gated repos
+export LLAMA_CACHE="$HOME/.cache/llama.cpp"
+[ -f ~/.secrets/hf-token ] && export HF_TOKEN="$(cat ~/.secrets/hf-token)"

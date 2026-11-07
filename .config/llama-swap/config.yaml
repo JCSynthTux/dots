@@ -14,13 +14,6 @@ models:
       --alias qwen3.8-27b
       --jinja
       --ctx-size 16384
-      --n-gpu-layers 99
-      --flash-attn auto
-      --cache-type-k q8_0
-      --cache-type-v q8_0
-      --parallel 1
-      --batch-size 1024
-      --threads 8
     ttl: 1800
 
   glm-4.7-flash:
@@ -32,13 +25,6 @@ models:
       --alias glm-4.7-flash
       --jinja
       --ctx-size 32768
-      --n-gpu-layers 99
-      --flash-attn auto
-      --cache-type-k q8_0
-      --cache-type-v q8_0
-      --parallel 1
-      --batch-size 1024
-      --threads 8
     ttl: 3600
 
   devstral-24b:
@@ -50,11 +36,4 @@ models:
       --alias devstral-24b
       --jinja
       --ctx-size 24576
-      --n-gpu-layers 99
-      --flash-attn auto
-      --cache-type-k q8_0
-      --cache-type-v q8_0
-      --parallel 1
-      --batch-size 1024
-      --threads 8
     ttl: 1800

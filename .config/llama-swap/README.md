@@ -38,6 +38,7 @@ definitions, mirror those edits into `opencode.local-gpu.jsonc` and
 
 ```bash
 ln -sfn ~/Projects/dots/.config/llama-swap    ~/.config/llama-swap
+ln -sfn ~/Projects/dots/.config/llama.cpp     ~/.config/llama.cpp
 ln -sfn ~/Projects/dots/.config/opencode      ~/.config/opencode
 ```
 
@@ -159,6 +160,27 @@ The `q8_0` KV caches need flash-attention; if llama-server aborts with
 "quantized V cache requires flash_attn", your build lacks FA support (common on
 some Vulkan builds): use an FA-capable build, or set `--cache-type-v f16` and
 lower `--ctx-size`.
+
+## llama.cpp shared config
+
+`~/.config/llama.cpp/config.ini` holds the flags every slot shares, under one
+`[*]` section: 99 GPU layers, `flash-attn auto`, `q8_0` K/V caches, `parallel 1`,
+batch 1024, 8 threads. The `cmd` blocks then keep only what is per-model —
+`--model`, `--alias`, `--ctx-size` — plus `--jinja`, which stays explicit because
+tool calling depends on it.
+
+Precedence is **config file < environment (`LLAMA_ARG_*`) < CLI flags < model
+presets**, so a per-slot flag always wins over the ini.
+
+The ini needs a recent llama.cpp with system-config support (PR #26118; current
+AUR `-git` builds qualify). Older builds silently ignore the file, which drops
+the `q8_0` KV caches back to f16 — and f16 KV can OOM at 32K. So verify after the
+first start that the log shows `cache_type = q8_0` and 99 GPU layers; if it does
+not, move those flags back into the `cmd` blocks.
+
+Shell exports live in `.zshrc`: `LLAMA_CACHE=$HOME/.cache/llama.cpp` pins the HF
+download cache, and `HF_TOKEN` is read from `~/.secrets/hf-token` when present
+(gated repos). Re-source with `source ~/.zshrc` or restart the shell.
 
 ## 2. Install llama-swap
 
