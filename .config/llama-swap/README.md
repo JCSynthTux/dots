@@ -5,21 +5,27 @@ never manages model processes; llama-swap keeps **one model in VRAM at a time**
 and hot-swaps (kill + start) when a request names a different model. Target: RX
 9060 XT, 16 GB, Navi 44 = gfx1200.
 
-## Fleet: role-specialized, three models
+## Fleet: role-specialized models
 
 | Role | Model | Quant | Weights | ctx | ttl |
 |------|-------|-------|---------|-----|-----|
 | orchestrator | `qwen3.8-27b` | UD-Q3_K_XL | ~13.2 GB | 16384 | 1800 s |
 | coder, explorer, tester | `glm-4.7-flash` | UD-Q3_K_XL | ~13.8 GB (~12.8 GiB) | 32768 | 3600 s |
 | reviewer | `devstral-24b` | Q3_K_M | ~11.5 GB | 24576 | 1800 s |
+| researcher (dedicated primary) | `heretic-9b` | Q4_K_M | ~5.4 GB | 32768 | 1800 s |
 
 > **Do not use GLM-4.7-Flash `UD-Q4_K_XL`.** It is 17.5 GB (16.3 GiB) and exceeds
 > the card before KV cache, desktop reserve, or compute buffers.
 
+The researcher is user-invoked (primary mode), so selecting it swaps the resident
+model once — it does not co-run with the orchestration fleet.
+
 **Swap behaviour:** phase-boundary swaps only — orchestrator → coder → reviewer.
 `explorer` and `tester` ride `glm-4.7-flash`, the coder's model, so only the
 **coder's** mid-run subagent calls avoid a swap. Orchestrator → explorer/reviewer
-dispatch still crosses a model boundary and swaps, which is intended.
+dispatch still crosses a model boundary and swaps, which is intended. The
+researcher swaps like the orchestrator — at a phase boundary the user starts, not
+mid-run.
 
 ## Switching: copy-in-place + git restore
 
@@ -224,6 +230,7 @@ mkdir -p ~/.local/share/models
 hf download unsloth/Qwen3.8-27B-GGUF --include "*UD-Q3_K_XL*" --local-dir ~/.local/share/models
 hf download unsloth/GLM-4.7-Flash-GGUF --include "*UD-Q3_K_XL*" --local-dir ~/.local/share/models
 hf download unsloth/Devstral-Small-2-24B-Instruct-2512-GGUF --include "*Q3_K_M*" --local-dir ~/.local/share/models
+hf download DavidAU/Qwen3.5-9B-The-Defiant-Fable-Uncensored-Heretic-NEO-IMATRIX-MAX-MTP-GGUF --include "*Q4_K_M*" --local-dir ~/.local/share/models
 ```
 
 Verify the exact filenames on the HF repos at download time — Unsloth quant
@@ -236,6 +243,20 @@ systemctl --user daemon-reload && systemctl --user enable --now llama-swap
 journalctl --user -u llama-swap -f   # watch loads/swaps
 ```
 
+## Uncensored researcher model — tool-calling caveat
+
+`heretic-9b` ships a Hermes-style `<tool_call>` template, which is present in the
+GGUF's chat template, but its reliability under llama.cpp/OpenCode is unproven.
+After the first start, confirm the llama-server log shows a Qwen/Hermes chat
+template, and make the smoke test include the researcher actually emitting tool
+calls.
+
+If `<tool_call>` parsing fails or the model simply will not call tools, switch the
+slot's `--model` to the abliterated Dolphin fallback —
+`mradermacher/Dolphin3.0-Llama3.1-8B-abliterated-GGUF`, Q4_K_M (~4.9 GB, proven
+function-calling lineage, Llama 3.1 license) — and re-run the smoke test. Note
+that reasoning models can be tool-reluctant; a firm system prompt helps.
+
 ## Smoke test (mandatory)
 
 Vendor scores are full-precision claims. Before trusting the fleet, run the same
@@ -243,6 +264,10 @@ refactor → fix → patch task against `glm-4.7-flash`, `qwen3.8-27b` and
 `devstral-24b` on a real repo and compare the results. Also verify each model
 actually emits tool calls in OpenCode: small-model tool calling is binary —
 fitting in VRAM is not the same as working.
+
+The researcher needs this check most of all: switch to `heretic-9b`, ask it a
+question that requires a searxng search, and confirm it emits a tool call instead
+of answering from memory. If it does not, take the Dolphin fallback above.
 
 Finally, confirm the first llama-server start shows the `llama_kv_cache` line with
 `K (q8_0)` / `V (q8_0)` and all layers offloaded (`offloaded 99/99`):

@@ -27,6 +27,12 @@
                     "name": "Devstral Small 2 24B Q3_K_M",
                     "capabilities": { "tools": true, "input": ["text"], "output": ["text"] },
                     "limit": { "context": 24576, "output": 8192 }
+                },
+                "heretic-9b": {
+                    "modelID": "heretic-9b",
+                    "name": "Qwen3.5 9B Heretic (uncensored)",
+                    "capabilities": { "tools": true, "input": ["text"], "output": ["text"] },
+                    "limit": { "context": 32768, "output": 8192 }
                 }
             }
         }

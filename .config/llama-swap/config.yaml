@@ -37,3 +37,14 @@ models:
       --jinja
       --ctx-size 24576
     ttl: 1800
+
+  heretic-9b:
+    cmd: >
+      /usr/bin/llama-server
+      --host 127.0.0.1
+      --port ${PORT}
+      --model /home/jchroback/.local/share/models/Qwen3.5-9B-The-Defiant-Fable-Uncnr-Heretic-NEO-MAX-Q4_K_M.gguf
+      --alias heretic-9b
+      --jinja
+      --ctx-size 32768
+    ttl: 1800
