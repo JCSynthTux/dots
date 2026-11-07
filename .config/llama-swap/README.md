@@ -6,45 +6,58 @@ when a request names a different model. Target: RX 9060 XT, 16 GB, RDNA4 (gfx120
 
 Agents: `orchestrator`, `coder`, `reviewer` → `qwen2.5-coder-14b`; `explorer`, `tester` → `qwen3-8b`.
 
-## Switching: copy-swap
+## Switching: copy-in-place + git restore
 
 `~/.config/opencode` is symlinked into this repo (via `install.sh --link`), so
-the `mv` commands below edit the repo directly. Two inert copies hold the local
-variant; OpenCode only ever reads the live filenames `opencode.jsonc` and
-`agents/`.
+the copies below write straight into the repo. The local variant lives in two
+inert paths — `opencode.local-gpu.jsonc` and `agents-local-gpu/` — that OpenCode
+never reads: it only scans the fixed `opencode.jsonc` filename and the `agents/`
+dir.
 
-Switch to local models:
+**Bring-up (once, from the repo root).** This symlinks the new
+`~/.config/llama-swap/` dir into `$HOME/.config`; without it the unit's
+`ConditionPathExists` silently skips:
 
 ```bash
-cd ~/.config/opencode
-mv opencode.jsonc opencode.cloud.jsonc
-mv opencode.local-gpu.jsonc opencode.jsonc
-mv agents agents-cloud
-mv agents-local-gpu agents
+./install.sh --link
+```
+
+**Switch to local.** Quit the opencode TUI first, then from the repo root:
+
+```bash
+cp .config/opencode/opencode.local-gpu.jsonc .config/opencode/opencode.jsonc
+cp .config/opencode/agents-local-gpu/*.md .config/opencode/agents/
 systemctl --user enable --now llama-swap
 ```
 
-Then `/reload` in the OpenCode TUI (restart the TUI if anything looks stale).
+Start opencode and check `/agents`: orchestrator/coder/reviewer should show
+`local/qwen2.5-coder-14b`, explorer/tester `local/qwen3-8b`; `/models` should
+list the `local/...` models. If you did not quit first, run `/reload`.
 
-Switch back to cloud:
+**Switch back to cloud.** Quit the TUI, then from the repo root:
 
 ```bash
 systemctl --user disable --now llama-swap
-cd ~/.config/opencode
-mv opencode.jsonc opencode.local-gpu.jsonc
-mv opencode.cloud.jsonc opencode.jsonc
-mv agents agents-local-gpu
-mv agents-cloud agents
+git checkout -- .config/opencode/opencode.jsonc .config/opencode/agents/
 ```
 
-After switching, check `/agents` shows the expected models and no stray
-`-local-gpu` entries. The inert copies sit outside the scanned `agents/` dir and
-off the fixed `opencode.jsonc` filename, so they are never loaded.
+Run `/reload` after switching back too.
+
+**Safety rules.**
+
+- The swap overwrites tracked files in place, so while in local mode the tree is
+  dirty (modified `opencode.jsonc` + 5 agent files, nothing else). Never commit
+  in that state: switch back to cloud first, which restores the tracked cloud
+  versions via `git checkout --`.
+- If anything looks wrong while swapped, quit the TUI and run
+  `git checkout -- .config/opencode/`; that always returns to the tracked cloud
+  state.
+- Both blocks are idempotent: re-running either leaves the same end state.
 
 The unit is `ConditionPathExists`-guarded on `~/.config/llama-swap/config.yaml`,
-so it skips cleanly instead of retrying when that config is missing. Disabling
-on the way back keeps it from lingering in a broken state; `enable --now` on the
-way in restores serving (idempotent if already enabled).
+so it skips cleanly wherever that config is absent. With copy-in-place the config
+keeps existing while you are on cloud, so disabling the unit is about stopping
+the proxy and freeing VRAM, not avoiding a dangling symlink.
 
 ## 1. Install llama.cpp (RDNA4)
 
