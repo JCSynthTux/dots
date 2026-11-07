@@ -7,7 +7,7 @@ healthCheckTimeout: 240
 models:
   qwen3.8-27b:
     cmd: >
-      /home/jchroback/.local/bin/llama-server
+      /usr/bin/llama-server
       --host 127.0.0.1
       --port ${PORT}
       --model /home/jchroback/.local/share/models/Qwen3.8-27B-UD-Q3_K_XL.gguf
@@ -25,7 +25,7 @@ models:
 
   glm-4.7-flash:
     cmd: >
-      /home/jchroback/.local/bin/llama-server
+      /usr/bin/llama-server
       --host 127.0.0.1
       --port ${PORT}
       --model /home/jchroback/.local/share/models/GLM-4.7-Flash-UD-Q3_K_XL.gguf
@@ -43,7 +43,7 @@ models:
 
   devstral-24b:
     cmd: >
-      /home/jchroback/.local/bin/llama-server
+      /usr/bin/llama-server
       --host 127.0.0.1
       --port ${PORT}
       --model /home/jchroback/.local/share/models/Devstral-Small-2-24B-Instruct-2512-Q3_K_M.gguf

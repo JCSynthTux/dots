@@ -107,40 +107,44 @@ so it skips cleanly wherever that config is absent. With copy-in-place the confi
 keeps existing while you are on cloud, so disabling the unit is about stopping
 the proxy and freeing VRAM, not avoiding a dangling symlink.
 
-## 1. Build llama.cpp (RDNA4)
+## 1. Install llama.cpp (RDNA4, AUR)
 
-Build both backends and A/B them. **Default to Vulkan for GGUF on Linux**, though
-some RDNA4 setups favour ROCm; ROCm ≥ 7.0.2 is needed for gfx1200:
+On this machine llama.cpp comes from the AUR, so the server binary is
+**`/usr/bin/llama-server`** (`llama-cli`, `llama-bench` alongside). The
+`config.yaml` `cmd`s point there. Two install routes are valid — pick per
+preference:
 
-```bash
-cmake -B build-vulkan -DGGML_VULKAN=ON -DCMAKE_BUILD_TYPE=Release
-cmake --build build-vulkan --config Release -j"$(nproc)"
+**AUR variants.** `llama.cpp-hip` (ROCm/HIP, builds natively for the local GPU
+including gfx1200) or `llama.cpp-vulkan` (zero-ROCm fallback). These **CONFLICT**:
+both own the same `/usr/bin/llama-*` paths, so you cannot have hip and vulkan
+installed at once — A/B testing means swapping the package.
 
-cmake -B build-rocm -DGGML_HIP=ON -DGPU_TARGETS=gfx1200 -DCMAKE_BUILD_TYPE=Release
-cmake --build build-rocm --config Release -j"$(nproc)"
-```
-
-Install the binaries from whichever build you chose — both trees produce
-`llama-server` and `llama-bench`:
+**Official Arch `[extra]` split package** (newer, recommended for A/B):
 
 ```bash
-# Vulkan
-install -Dm755 build-vulkan/bin/llama-server ~/.local/bin/llama-server
-install -Dm755 build-vulkan/bin/llama-bench  ~/.local/bin/llama-bench
-# or ROCm
-install -Dm755 build-rocm/bin/llama-server   ~/.local/bin/llama-server
-install -Dm755 build-rocm/bin/llama-bench    ~/.local/bin/llama-bench
+pacman -S llama-cpp ggml-hip ggml-vulkan
 ```
 
-Benchmark the same GGUF with each build's own `llama-bench` and compare:
+That gives backend-agnostic `/usr/bin` binaries plus co-installable backend
+plugins in `/usr/lib/ggml`, so you can A/B backends without reinstalling.
+
+RDNA4/gfx1200 needs **ROCm 7.2+**, where official gfx1200 support landed — use
+whatever ROCm your distro currently ships. Verify the GPU target:
 
 ```bash
-build-vulkan/bin/llama-bench -m ~/.local/share/models/<model>.gguf -ngl 999 -fa 1 -p 512 -n 128 -r 5
-build-rocm/bin/llama-bench   -m ~/.local/share/models/<model>.gguf -ngl 999 -fa 1 -p 512 -n 128 -r 5
+rocminfo | grep gfx   # 9060 XT = gfx1200; gfx1201 is the 9070 family
 ```
 
-Confirm the target with `rocminfo | grep gfx`: the 9060 XT is `gfx1200`, while
-`gfx1201` is the 9070 family — do not mix them up when setting `-DGPU_TARGETS`.
+**A/B benchmark.** With the split package, activate the backend plugin you want
+and run:
+
+```bash
+/usr/bin/llama-bench -m ~/.local/share/models/<model>.gguf -ngl 999 -fa 1 -p 512 -n 128 -r 5
+```
+
+With AUR variants, benchmark, swap the package for the other variant, and repeat.
+Several controlled tests favour Vulkan on RDNA4 token generation, but your card
+and build decide — measure rather than assume.
 
 The `q8_0` KV caches need flash-attention; if llama-server aborts with
 "quantized V cache requires flash_attn", your build lacks FA support (common on
