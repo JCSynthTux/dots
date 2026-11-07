@@ -9,8 +9,10 @@ git clone git@github.com:JCSynthTux/dots.git ~/Projects/dots
 ```
 
 Then symlink the config dirs you use into `~/.config`, e.g.
-`ln -sfn ~/Projects/dots/.config/kitty ~/.config/kitty`. The local-GPU extras
-document their own symlinks in `.config/llama-swap/README.md`.
+`ln -sfn ~/Projects/dots/.config/kitty ~/.config/kitty`. If a destination already
+exists as a real directory, back it up and remove it first — `ln -sfn` replaces
+symlinks, not directories. The local-GPU extras document their own symlinks in
+`.config/llama-swap/README.md`.
 
 ## Overview
 

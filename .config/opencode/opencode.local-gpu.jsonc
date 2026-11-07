@@ -18,7 +18,7 @@
                 },
                 "glm-4.7-flash": {
                     "modelID": "glm-4.7-flash",
-                    "name": "GLM-4.7-Flash UD-Q4_K_XL",
+                    "name": "GLM-4.7-Flash UD-Q3_K_XL",
                     "capabilities": { "tools": true, "input": ["text"], "output": ["text"] },
                     "limit": { "context": 32768, "output": 8192 }
                 },
