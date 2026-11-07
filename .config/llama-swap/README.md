@@ -107,17 +107,23 @@ so it skips cleanly wherever that config is absent. With copy-in-place the confi
 keeps existing while you are on cloud, so disabling the unit is about stopping
 the proxy and freeing VRAM, not avoiding a dangling symlink.
 
-## 1. Install llama.cpp (RDNA4, AUR)
+## 1. Install llama.cpp (AUR / Arch extra)
 
 On this machine llama.cpp comes from the AUR, so the server binary is
 **`/usr/bin/llama-server`** (`llama-cli`, `llama-bench` alongside). The
 `config.yaml` `cmd`s point there. Two install routes are valid — pick per
 preference:
 
-**AUR variants.** `llama.cpp-hip` (ROCm/HIP, builds natively for the local GPU
-including gfx1200) or `llama.cpp-vulkan` (zero-ROCm fallback). These **CONFLICT**:
-both own the same `/usr/bin/llama-*` paths, so you cannot have hip and vulkan
-installed at once — A/B testing means swapping the package.
+**AUR variants.** `llama.cpp-hip-git` (ROCm/HIP, builds natively for the local
+GPU including gfx1200) or `llama.cpp-vulkan-git` (zero-ROCm fallback). These
+**CONFLICT**: both own the same `/usr/bin/llama-*` paths, so you cannot have hip
+and vulkan installed at once — A/B testing means swapping the package. Naming
+varies (`-bin` packages and forks such as `ik-llama.cpp-vulkan` exist), so check
+before installing:
+
+```bash
+yay -Ss llama.cpp
+```
 
 **Official Arch `[extra]` split package** (newer, recommended for A/B):
 
@@ -126,23 +132,26 @@ pacman -S llama-cpp ggml-hip ggml-vulkan
 ```
 
 That gives backend-agnostic `/usr/bin` binaries plus co-installable backend
-plugins in `/usr/lib/ggml`, so you can A/B backends without reinstalling.
+plugins in `/usr/lib/ggml`, so you can A/B backends without reinstalling. The
+plugins load automatically; list the devices and pass the index:
+
+```bash
+/usr/bin/llama-bench --list-devices
+/usr/bin/llama-bench -m ~/.local/share/models/<model>.gguf -dev 0 -ngl 999 -fa 1 -p 512 -n 128 -r 5
+```
+
+Run it once with the HIP device and once with the Vulkan device — verify the
+exact device flag with `llama-bench --help`, since names vary by version. With
+AUR variants, benchmark, swap the package for the other variant, and repeat.
 
 RDNA4/gfx1200 needs **ROCm 7.2+**, where official gfx1200 support landed — use
-whatever ROCm your distro currently ships. Verify the GPU target:
+whatever ROCm your distro currently ships. On the HIP route, verify the GPU
+target (this needs `rocm-utils`; a Vulkan-only install may not have it):
 
 ```bash
 rocminfo | grep gfx   # 9060 XT = gfx1200; gfx1201 is the 9070 family
 ```
 
-**A/B benchmark.** With the split package, activate the backend plugin you want
-and run:
-
-```bash
-/usr/bin/llama-bench -m ~/.local/share/models/<model>.gguf -ngl 999 -fa 1 -p 512 -n 128 -r 5
-```
-
-With AUR variants, benchmark, swap the package for the other variant, and repeat.
 Several controlled tests favour Vulkan on RDNA4 token generation, but your card
 and build decide — measure rather than assume.
 
