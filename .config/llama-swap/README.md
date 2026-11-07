@@ -165,22 +165,33 @@ lower `--ctx-size`.
 
 `~/.config/llama.cpp/config.ini` holds the flags every slot shares, under one
 `[*]` section: 99 GPU layers, `flash-attn auto`, `q8_0` K/V caches, `parallel 1`,
-batch 1024, 8 threads. The `cmd` blocks then keep only what is per-model —
-`--model`, `--alias`, `--ctx-size` — plus `--jinja`, which stays explicit because
-tool calling depends on it.
+batch 1024, 8 threads. The `cmd` blocks then keep only what is per-slot —
+`--host`, `--port`, `--model`, `--alias`, `--jinja`, `--ctx-size`; `--jinja`
+stays explicit because tool calling depends on it.
 
 Precedence is **config file < environment (`LLAMA_ARG_*`) < CLI flags < model
 presets**, so a per-slot flag always wins over the ini.
 
 The ini needs a recent llama.cpp with system-config support (PR #26118; current
 AUR `-git` builds qualify). Older builds silently ignore the file, which drops
-the `q8_0` KV caches back to f16 — and f16 KV can OOM at 32K. So verify after the
-first start that the log shows `cache_type = q8_0` and 99 GPU layers; if it does
-not, move those flags back into the `cmd` blocks.
+the `q8_0` KV caches back to f16 — and f16 KV can OOM at 32K. Verify the startup
+log instead of assuming: the `llama_kv_cache` line should read `K (q8_0)` /
+`V (q8_0)`, and all layers should be offloaded (`offloaded 99/99`, or
+`n_gpu_layers = 99`):
 
-Shell exports live in `.zshrc`: `LLAMA_CACHE=$HOME/.cache/llama.cpp` pins the HF
-download cache, and `HF_TOKEN` is read from `~/.secrets/hf-token` when present
-(gated repos). Re-source with `source ~/.zshrc` or restart the shell.
+```bash
+journalctl --user -u llama-swap -f | grep -E 'q8_0|offloaded'
+```
+
+(Or watch the `/logs` stream.) If the line shows f16 or fewer layers, move those
+flags back into the `cmd` blocks.
+
+Shell exports live in `.zshrc`: `LLAMA_CACHE=$HOME/.cache/llama.cpp` pins the
+cache llama.cpp uses for its own `-hf` downloads, while this guide's
+`hf download --local-dir ~/.local/share/models` commands write GGUFs straight
+into `~/.local/share/models` — both mechanisms are in play. `HF_TOKEN` is read
+from `~/.secrets/hf-token` when present (gated repos). Re-source with
+`source ~/.zshrc` or restart the shell.
 
 ## 2. Install llama-swap
 
@@ -219,6 +230,11 @@ refactor → fix → patch task against `glm-4.7-flash`, `qwen3.8-27b` and
 `devstral-24b` on a real repo and compare the results. Also verify each model
 actually emits tool calls in OpenCode: small-model tool calling is binary —
 fitting in VRAM is not the same as working.
+
+Finally, confirm the first llama-server start shows the `llama_kv_cache` line with
+`K (q8_0)` / `V (q8_0)` and all layers offloaded (`offloaded 99/99`). The shared
+`config.ini` is only safe to rely on once that check passes — an ignored ini means
+f16 KV, which can OOM at 32K.
 
 ## VRAM reality (16 GB)
 
