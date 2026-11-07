@@ -37,11 +37,24 @@ definitions, mirror those edits into `opencode.local-gpu.jsonc` and
 `opencode` link the copy-swap never reaches the live system:
 
 ```bash
-mkdir -p ~/.config/systemd/user
 ln -sfn ~/Projects/dots/.config/llama-swap    ~/.config/llama-swap
 ln -sfn ~/Projects/dots/.config/opencode      ~/.config/opencode
-ln -sfn ~/Projects/dots/.config/systemd/user/llama-swap.service ~/.config/systemd/user/llama-swap.service
 ```
+
+Check the systemd dir before touching it — link it only if it is **not** already a
+symlink into this repo:
+
+```bash
+[ -L ~/.config/systemd ] && readlink ~/.config/systemd
+# only if the above is not this repo:
+ln -sfn ~/Projects/dots/.config/systemd ~/.config/systemd
+```
+
+If `~/.config/systemd` is already a symlink into this repo (e.g. from an older
+setup), skip the link entirely — the unit is already live. Do **not** link
+`llama-swap.service` individually in that case: source and destination resolve to
+the same file, and `ln` can replace the tracked unit with a self-referential
+symlink.
 
 If a destination already exists as a **real directory**, back it up and remove it
 first — `ln -sfn` replaces an existing symlink, not a real directory.
@@ -177,13 +190,12 @@ fitting in VRAM is not the same as working.
 RX 9060 XT: 16 GB, Navi 44 = gfx1200. Reserve **1.0–1.5 GB for the GNOME
 desktop** — never budget to 16.0 GB.
 
-`glm-4.7-flash` is the tight slot. At `UD-Q3_K_XL` (~12.8 GiB weights) plus a
-q8_0 MLA cache (~0.9 GiB @32K) and ~0.8 GiB of compute buffers, the 32K default
-totals ~16.0 GiB — viable only with a lean (~1.0 GiB) desktop footprint. Under a
-typical GNOME session (1.5 GiB reserve) expect to take the first ladder step to
-24K (~15.8 GiB), which is the realistic default; `--ctx-size 32768` stays in
-`config.yaml` for lean setups. `qwen3.8-27b` is comfortable by comparison — its
-hybrid-attention KV is small at 16K.
+`glm-4.7-flash` is the tight slot. At `UD-Q3_K_XL` the 32K default sums to
+12.8 GiB weights + ~0.9 GiB q8_0 MLA KV @32K + ~0.8 GiB buffers + 1.5 GiB GNOME
+reserve ≈ 16.0 GiB (over the ~15.9 GiB usable card) → hence the first ladder step,
+24K ≈ 15.8 GiB, is the realistic GNOME default. `--ctx-size 32768` stays in
+`config.yaml` for lean (~1.0 GiB desktop) setups. `qwen3.8-27b` is comfortable by
+comparison — its hybrid-attention KV is small at 16K.
 
 | Model | Weights | KV at default ctx | Verdict |
 |-------|---------|-------------------|---------|
@@ -193,10 +205,14 @@ hybrid-attention KV is small at 16K.
 
 OOM ladders, in order:
 
-- `glm-4.7-flash`: reduce context 32K → 24K → 16K; if it still OOMs, move to a
-  smaller Unsloth quant — `UD-IQ3_XXS` (~12.9 GB), `UD-Q2_K_XL` (~11.9 GB) or
-  `UD-IQ2_M` (~11.0 GB); verify exact filenames on the HF repo at download time.
-  Context reduction cannot fix a weights-size problem.
+- `glm-4.7-flash`: reduce context 32K → 24K (24576) → 16K. When you take the 24K step,
+  ALSO set `"limit": { "context": 24576 }` for `glm-4.7-flash` in
+  `.config/opencode/opencode.local-gpu.jsonc` and re-run the copy-in-place `cp` for
+  that file — otherwise OpenCode advertises 32768 and can send prompts past the
+  server's context. If it still OOMs, move to a smaller Unsloth quant —
+  `UD-IQ3_XXS` (~12.9 GB), `UD-Q2_K_XL` (~11.9 GB) or `UD-IQ2_M` (~11.0 GB);
+  verify exact filenames on the HF repo at download time. Context reduction cannot
+  fix a weights-size problem.
 - `qwen3.8-27b`: 16K → 12K → 8K context, or drop to `UD-IQ3_S` (~12.0 GB) or
   `UD-IQ3_XXS` (~10.9 GB).
 - `devstral-24b`: 24K → 16K (32K is the hard ceiling).
