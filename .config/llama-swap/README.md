@@ -199,10 +199,17 @@ from `~/.secrets/hf-token` when present (gated repos). Re-source with
 
 ## 2. Install llama-swap
 
+From the AUR — the source package builds v270 for you, the `-bin` package pulls
+the prebuilt GitHub release. Both install to `/usr/bin/llama-swap` and conflict
+with each other:
+
 ```bash
-go install github.com/mostlygeek/llama-swap@latest
-install -Dm755 "$(go env GOPATH)/bin/llama-swap" ~/.local/bin/llama-swap
+yay -S llama-swap        # or: yay -S llama-swap-bin
 ```
+
+The source package also drops its own systemd unit and an example config into
+`/etc/llama-swap`. Ignore both: this repo's unit passes `--config` explicitly, so
+the packaged unit should not be adopted.
 
 llama-swap v270 exits unless told where its config is, so the unit passes
 `--config ~/.config/llama-swap/config.yaml` plus `--listen 127.0.0.1:8080` —
