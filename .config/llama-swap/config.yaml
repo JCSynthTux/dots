@@ -28,7 +28,7 @@ models:
       /home/jchroback/.local/bin/llama-server
       --host 127.0.0.1
       --port ${PORT}
-      --model /home/jchroback/.local/share/models/GLM-4.7-Flash-UD-Q4_K_XL.gguf
+      --model /home/jchroback/.local/share/models/GLM-4.7-Flash-UD-Q3_K_XL.gguf
       --alias glm-4.7-flash
       --jinja
       --ctx-size 32768

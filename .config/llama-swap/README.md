@@ -10,12 +10,16 @@ and hot-swaps (kill + start) when a request names a different model. Target: RX
 | Role | Model | Quant | Weights | ctx | ttl |
 |------|-------|-------|---------|-----|-----|
 | orchestrator | `qwen3.8-27b` | UD-Q3_K_XL | ~13.2 GB | 16384 | 1800 s |
-| coder, explorer, tester | `glm-4.7-flash` | UD-Q4_K_XL | ~13 GB | 32768 | 3600 s |
+| coder, explorer, tester | `glm-4.7-flash` | UD-Q3_K_XL | ~13.8 GB (~12.8 GiB) | 32768 | 3600 s |
 | reviewer | `devstral-24b` | Q3_K_M | ~11.5 GB | 24576 | 1800 s |
 
+> **Do not use GLM-4.7-Flash `UD-Q4_K_XL`.** It is 17.5 GB (16.3 GiB) and exceeds
+> the card before KV cache, desktop reserve, or compute buffers.
+
 **Swap behaviour:** phase-boundary swaps only — orchestrator → coder → reviewer.
-`explorer` and `tester` ride `glm-4.7-flash`, the coder's model, so subagent
-calls made mid-run never trigger a swap.
+`explorer` and `tester` ride `glm-4.7-flash`, the coder's model, so only the
+**coder's** mid-run subagent calls avoid a swap. Orchestrator → explorer/reviewer
+dispatch still crosses a model boundary and swaps, which is intended.
 
 ## Switching: copy-in-place + git restore
 
@@ -27,16 +31,18 @@ manual snapshots of the cloud setup: when you change your cloud config or agent
 definitions, mirror those edits into `opencode.local-gpu.jsonc` and
 `agents-local-gpu/` (keeping the local model pins and `providers` block).
 
-**Bring-up (once, from the repo root).** Symlink the new dirs into `$HOME/.config`
-by hand. Without the `llama-swap` link the unit's `ConditionPathExists` silently
-skips; without the `opencode` link the copy-swap never reaches the live system:
+**Bring-up (once, from the repo root).** Symlink the config dirs into
+`$HOME/.config` by hand. `-sfn` is idempotent over an existing link. Without the
+`llama-swap` link the unit's `ConditionPathExists` silently skips; without the
+`opencode` link the copy-swap never reaches the live system:
 
 ```bash
-ln -s ~/Projects/dots/.config/llama-swap ~/.config/llama-swap
+ln -sfn ~/Projects/dots/.config/llama-swap    ~/.config/llama-swap
+ln -sfn ~/Projects/dots/.config/opencode      ~/.config/opencode
+ln -sfn ~/Projects/dots/.config/systemd/user  ~/.config/systemd/user
 ```
 
-Use the same pattern for `~/.config/systemd/user` and `~/.config/opencode` if
-they are not already symlinked into this repo.
+The repo lives at `~/Projects/dots`; adjust if yours differs.
 
 **Switch to local.** Quit the opencode TUI first, and commit or stash any
 uncommitted changes under `.config/opencode/` — the `cp` overwrites the live
@@ -97,17 +103,23 @@ cmake -B build-rocm -DGGML_HIP=ON -DGPU_TARGETS=gfx1200 -DCMAKE_BUILD_TYPE=Relea
 cmake --build build-rocm --config Release -j"$(nproc)"
 ```
 
-Install whichever wins:
+Install the binaries from whichever build you chose — both trees produce
+`llama-server` and `llama-bench`:
 
 ```bash
+# Vulkan
 install -Dm755 build-vulkan/bin/llama-server ~/.local/bin/llama-server
 install -Dm755 build-vulkan/bin/llama-bench  ~/.local/bin/llama-bench
+# or ROCm
+install -Dm755 build-rocm/bin/llama-server   ~/.local/bin/llama-server
+install -Dm755 build-rocm/bin/llama-bench    ~/.local/bin/llama-bench
 ```
 
-Benchmark the same GGUF with each build's `llama-bench` and compare:
+Benchmark the same GGUF with each build's own `llama-bench` and compare:
 
 ```bash
-llama-bench -ngl 999 -fa 1 -p 512 -n 128 -r 5
+build-vulkan/bin/llama-bench -m ~/.local/share/models/<model>.gguf -ngl 999 -fa 1 -p 512 -n 128 -r 5
+build-rocm/bin/llama-bench   -m ~/.local/share/models/<model>.gguf -ngl 999 -fa 1 -p 512 -n 128 -r 5
 ```
 
 Confirm the target with `rocminfo | grep gfx`: the 9060 XT is `gfx1200`, while
@@ -134,7 +146,7 @@ loopback only, since otherwise it binds all interfaces with no auth.
 ```bash
 mkdir -p ~/.local/share/models
 hf download unsloth/Qwen3.8-27B-GGUF --include "*UD-Q3_K_XL*" --local-dir ~/.local/share/models
-hf download unsloth/GLM-4.7-Flash-GGUF --include "*UD-Q4_K_XL*" --local-dir ~/.local/share/models
+hf download unsloth/GLM-4.7-Flash-GGUF --include "*UD-Q3_K_XL*" --local-dir ~/.local/share/models
 hf download unsloth/Devstral-Small-2-24B-Instruct-2512-GGUF --include "*Q3_K_M*" --local-dir ~/.local/share/models
 ```
 
@@ -161,24 +173,32 @@ fitting in VRAM is not the same as working.
 RX 9060 XT: 16 GB, Navi 44 = gfx1200. Reserve **1.0–1.5 GB for the GNOME
 desktop** — never budget to 16.0 GB.
 
+`glm-4.7-flash` is the tight slot: at `UD-Q3_K_XL` the 32K default leaves little
+headroom. `qwen3.8-27b` is comfortable by comparison — its hybrid-attention KV is
+small at 16K.
+
 | Model | Weights | KV at default ctx | Verdict |
 |-------|---------|-------------------|---------|
-| `qwen3.8-27b` | ~13.2 GB | q8_0 @16K | ~15 GB total — **tight** |
-| `glm-4.7-flash` | ~13 GB | q8_0 @32K | tight; MoE keeps compute cheap |
-| `devstral-24b` | ~11.5 GB | 160 KiB/token f16 @24K | 32K is the hard ceiling |
+| `qwen3.8-27b` | ~13.2 GB | q8_0 @16K | ~15 GB total — comfortable for its ctx |
+| `glm-4.7-flash` | ~13.8 GB | q8_0 @32K | **tightest slot**; MoE keeps compute cheap |
+| `devstral-24b` | ~11.5 GB | q8_0 ~80 KiB/token: ~1.9 GiB @24K, ~2.5 GiB @32K | 32K is the hard ceiling (f16 baseline: 160 KiB/token) |
 
 OOM ladders, in order:
 
-- `qwen3.8-27b`: 16K → 12K → 8K context, or drop the quant to `IQ3_XS`.
-- `glm-4.7-flash`: 32K → 24K → 16K context.
-- `devstral-24b`: 24K → 16K (32K is the hard ceiling; at 160 KiB/token the KV is
-  the first thing to give).
+- `glm-4.7-flash`: reduce context 32K → 24K → 16K; if it still OOMs, move to a
+  smaller quant from the Unsloth repo (`UD-Q3_K_S`/`IQ3` variants — verify exact
+  filenames on the HF repo at download time). Context reduction cannot fix a
+  weights-size problem.
+- `qwen3.8-27b`: 16K → 12K → 8K context, or drop to `UD-IQ3_S` (~12.0 GB) or
+  `UD-IQ3_XXS` (~10.9 GB).
+- `devstral-24b`: 24K → 16K (32K is the hard ceiling).
 
 `--parallel 1` is deliberate: llama-server divides `--ctx-size` across parallel
 slots, so a higher value multiplies the KV footprint for no benefit here.
 
-**ReBAR must be enabled** for the Vulkan backend — without it, large GGUF
-allocations can fail or thrash. Check `lspci -vv` for `Resizable BAR: enabled`.
+**ReBAR is strongly recommended** for the Vulkan backend — it materially helps
+large GGUF allocations, but is not a hard requirement. Check `lspci -vv` for
+`Resizable BAR: enabled`.
 
 Only one model is resident, so any request on a *different* model waits for a
 swap. That is why `explorer` and `tester` share the coder's model.

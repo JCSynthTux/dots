@@ -5,12 +5,12 @@ Personal dotfiles for Arch Linux / CachyOS — Hyprland + Noctalia desktop, Catp
 ## Quick Start
 
 ```bash
-git clone git@github.com:JCSynthTux/dots.git ~/dots
+git clone git@github.com:JCSynthTux/dots.git ~/Projects/dots
 ```
 
 Then symlink the config dirs you use into `~/.config`, e.g.
-`ln -s ~/dots/.config/kitty ~/.config/kitty`. The local-GPU extras document their
-own symlinks in `.config/llama-swap/README.md`.
+`ln -sfn ~/Projects/dots/.config/kitty ~/.config/kitty`. The local-GPU extras
+document their own symlinks in `.config/llama-swap/README.md`.
 
 ## Overview
 
