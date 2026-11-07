@@ -12,7 +12,7 @@ and hot-swaps (kill + start) when a request names a different model. Target: RX
 | orchestrator | `qwen3.8-27b` | UD-Q3_K_XL | ~13.2 GB | 16384 | 1800 s |
 | coder, explorer, tester | `glm-4.7-flash` | UD-Q3_K_XL | ~13.8 GB (~12.8 GiB) | 32768 | 3600 s |
 | reviewer | `devstral-24b` | Q3_K_M | ~11.5 GB | 24576 | 1800 s |
-| researcher (dedicated primary) | `heretic-9b` | Q4_K_M | ~5.4 GB | 32768 | 1800 s |
+| researcher (dedicated primary) | `heretic-9b` | Q4_K_M | ~6.8 GB (6.83 GB) | 32768 | 1800 s |
 
 > **Do not use GLM-4.7-Flash `UD-Q4_K_XL`.** It is 17.5 GB (16.3 GiB) and exceeds
 > the card before KV cache, desktop reserve, or compute buffers.
@@ -89,25 +89,34 @@ you did not quit first, run `/reload`.
 ```bash
 systemctl --user disable --now llama-swap
 git checkout -- .config/opencode/opencode.jsonc .config/opencode/agents/
+rm -f .config/opencode/agents/researcher.md
 ```
+
+`git checkout --` restores tracked files but leaves new untracked ones behind, and
+`researcher.md` is local-only — without the `rm -f`, cloud mode keeps a broken
+sixth agent pointing at `local/heretic-9b`. The removal is a no-op if the
+researcher was never copied.
 
 Run `/reload` after switching back too.
 
 **Safety rules.**
 
-- The swap overwrites tracked files in place, so while in local mode the tree is
-  dirty (modified `opencode.jsonc` + 5 agent files, nothing else). Never commit
-  in that state: switch back to cloud first, which restores the tracked cloud
-  versions via `git checkout --`.
+- The swap overwrites tracked files in place and adds one untracked file, so while
+  in local mode the tree is dirty: modified `opencode.jsonc` plus 5 tracked agent
+  files, plus a 6th untracked `agents/researcher.md`. Never commit in that state:
+  switch back to cloud first, which restores the tracked cloud versions via
+  `git checkout --` and removes the untracked agent with `rm -f`.
 - If anything looks wrong while swapped, quit the TUI and run
-  `git checkout -- .config/opencode/opencode.jsonc .config/opencode/agents/`;
-  that resets only the swap targets and returns them to the tracked cloud state.
-  If a swapped state was accidentally committed, `git revert` that commit
-  instead.
+  `git checkout -- .config/opencode/opencode.jsonc .config/opencode/agents/`
+  followed by `rm -f .config/opencode/agents/researcher.md`; that resets only the
+  swap targets (tracked files restored, the untracked researcher removed) and
+  returns them to the tracked cloud state. If a swapped state was accidentally
+  committed, `git revert` that commit instead.
 - While in local mode, edit `opencode.local-gpu.jsonc` and `agents-local-gpu/`
   (then re-run the two `cp` lines) rather than the live swapped files, whose
   edits are discarded on switch-back.
-- Both blocks are idempotent: re-running either leaves the same end state.
+- Both blocks are idempotent: re-running either leaves the same end state, and the
+  `rm -f` in the switch-back is a no-op when `researcher.md` was never copied.
 
 The unit is `ConditionPathExists`-guarded on `~/.config/llama-swap/config.yaml`,
 so it skips cleanly wherever that config is absent. With copy-in-place the config
@@ -230,7 +239,7 @@ mkdir -p ~/.local/share/models
 hf download unsloth/Qwen3.8-27B-GGUF --include "*UD-Q3_K_XL*" --local-dir ~/.local/share/models
 hf download unsloth/GLM-4.7-Flash-GGUF --include "*UD-Q3_K_XL*" --local-dir ~/.local/share/models
 hf download unsloth/Devstral-Small-2-24B-Instruct-2512-GGUF --include "*Q3_K_M*" --local-dir ~/.local/share/models
-hf download DavidAU/Qwen3.5-9B-The-Defiant-Fable-Uncensored-Heretic-NEO-IMATRIX-MAX-MTP-GGUF --include "*Q4_K_M*" --local-dir ~/.local/share/models
+hf download DavidAU/Qwen3.5-9B-The-Defiant-Fable-Uncensored-Heretic-NEO-IMATRIX-MAX-MTP-GGUF --include "*MAX-Q4_K_M*" --local-dir ~/.local/share/models
 ```
 
 Verify the exact filenames on the HF repos at download time — Unsloth quant
@@ -247,9 +256,9 @@ journalctl --user -u llama-swap -f   # watch loads/swaps
 
 `heretic-9b` ships a Hermes-style `<tool_call>` template, which is present in the
 GGUF's chat template, but its reliability under llama.cpp/OpenCode is unproven.
-After the first start, confirm the llama-server log shows a Qwen/Hermes chat
-template, and make the smoke test include the researcher actually emitting tool
-calls.
+llama.cpp does not reliably log which chat template it loaded, so a log line is
+not proof: the definitive check is a real `<tool_call>` round-trip from the
+researcher, which the smoke test below covers.
 
 If `<tool_call>` parsing fails or the model simply will not call tools, switch the
 slot's `--model` to the abliterated Dolphin fallback —
@@ -299,6 +308,7 @@ comparison — its hybrid-attention KV is small at 16K.
 | `qwen3.8-27b` | ~13.2 GB | q8_0 @16K | ~15 GB total — comfortable for its ctx |
 | `glm-4.7-flash` | ~13.8 GB | q8_0 @32K | **tightest slot**; MoE keeps compute cheap |
 | `devstral-24b` | ~11.5 GB | q8_0 ~80 KiB/token: ~1.9 GiB @24K, ~2.5 GiB @32K | 32K is the hard ceiling (f16 baseline: 160 KiB/token) |
+| `heretic-9b` | ~6.8 GB | q8_0 ~2 GiB @32K | ~10 GB total — fits comfortably |
 
 OOM ladders, in order:
 
@@ -313,6 +323,9 @@ OOM ladders, in order:
 - `qwen3.8-27b`: 16K → 12K → 8K context, or drop to `UD-IQ3_S` (~12.0 GB) or
   `UD-IQ3_XXS` (~10.9 GB).
 - `devstral-24b`: 24K → 16K (32K is the hard ceiling).
+
+`heretic-9b` needs no ladder: ~6.8 GB weights + ~2 GB q8_0 KV @32K + overhead
+lands around 10 GB, comfortably inside the card.
 
 `--parallel 1` is deliberate: llama-server divides `--ctx-size` across parallel
 slots, so a higher value multiplies the KV footprint for no benefit here.
