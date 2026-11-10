@@ -18,7 +18,7 @@ symlinks, not directories. The local-GPU extras document their own symlinks in
 
 | Component | What |
 |-----------|------|
-| **Desktop Shell** | GNOME Shell (with extensions: Dash to Dock, Blur My Shell, Vitals, auto-move-windows) |
+| **Desktop Shell** | GNOME Shell (with extensions: Dash to Dock, Vitals, auto-move-windows) |
 | **Launcher** | GNOME app grid (Super key) |
 | **Lock screen** | GNOME built-in lock screen |
 | **Terminal** | Kitty |
@@ -83,7 +83,7 @@ Catppuccin Mocha throughout — terminal, editor, shell UI, and accent colors.
 
 ## Dependencies
 
-- **GNOME Shell** — Desktop shell (with extensions: Dash to Dock, Blur My Shell, Vitals, auto-move-windows)
+- **GNOME Shell** — Desktop shell (with extensions: Dash to Dock, Vitals, auto-move-windows)
 - **Kitty** — Terminal emulator
 - **LibreWolf** — Web browser
 - **VSCodium** — Code editor

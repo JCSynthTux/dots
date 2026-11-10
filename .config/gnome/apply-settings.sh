@@ -136,126 +136,6 @@ configure_extensions() {
     set_setting org.gnome.shell.extensions.vitals update-time 5
 }
 
-configure_blur_my_shell() {
-    # Preserve the currently exposed Blur My Shell profile. This is an
-    # intentional GNOME-shell-only visual setting.
-    local schema
-    schema=org.gnome.shell.extensions.blur-my-shell
-    set_setting "$schema" brightness 0.6
-    set_setting "$schema" color "(0.0, 0.0, 0.0, 0.0)"
-    set_setting "$schema" color-and-noise true
-    set_setting "$schema" debug false
-    set_setting "$schema" hacks-level 1
-    set_setting "$schema" noise-amount 0.0
-    set_setting "$schema" noise-lightness 0.0
-    set_setting "$schema" rounded-blur-found true
-    set_setting "$schema" settings-version 2
-    set_setting "$schema" sigma 30
-    set_setting "$schema" pipelines "{'pipeline_default': {'name': <'Default'>, 'effects': <[<{'type': <'native_static_gaussian_blur'>, 'id': <'effect_000000000000'>, 'params': <{'radius': <30>, 'brightness': <0.6>}>}>]>}, 'pipeline_default_rounded': {'name': <'Default rounded'>, 'effects': <[<{'type': <'native_static_gaussian_blur'>, 'id': <'effect_000000000001'>, 'params': <{'radius': <30>, 'brightness': <0.6>}>}>, <{'type': <'corner'>, 'id': <'effect_000000000002'>, 'params': <{'radius': <24>, 'corners_bottom': <true>, 'corners_top': <true>}>}>]>}, 'pipeline_71815333033373': {'name': <'Default top rounded'>, 'effects': <[<{'type': <'native_static_gaussian_blur'>, 'id': <'effect_99053595495978'>, 'params': <@a{sv} {}>}>, <{'type': <'corner'>, 'id': <'effect_55421307991030'>, 'params': <{'corners_bottom': <true>, 'corners_top': <false>}>}>]>}}"
-
-    schema=org.gnome.shell.extensions.blur-my-shell.appfolder
-    set_setting "$schema" blur true
-    set_setting "$schema" brightness 0.6
-    set_setting "$schema" color "(0.0, 0.0, 0.0, 0.0)"
-    set_setting "$schema" customize false
-    set_setting "$schema" noise-amount 0.0
-    set_setting "$schema" noise-lightness 0.0
-    set_setting "$schema" sigma 30
-    set_setting "$schema" style-dialogs 1
-
-    schema=org.gnome.shell.extensions.blur-my-shell.applications
-    set_setting "$schema" blacklist "['Plank','com.desktop.ding','Conky']"
-    set_setting "$schema" blur false
-    set_setting "$schema" blur-on-overview false
-    set_setting "$schema" brightness 1.0
-    set_setting "$schema" color "(0.0, 0.0, 0.0, 0.0)"
-    set_setting "$schema" corner-radius 15
-    set_setting "$schema" corner-when-maximized false
-    set_setting "$schema" customize true
-    set_setting "$schema" dynamic-opacity true
-    set_setting "$schema" enable-all false
-    set_setting "$schema" noise-amount 0.0
-    set_setting "$schema" noise-lightness 0.0
-    set_setting "$schema" opacity 215
-    set_setting "$schema" pipeline "'pipeline_default'"
-    set_setting "$schema" sigma 30
-    set_setting "$schema" static-blur false
-    set_setting "$schema" whitelist "[]"
-
-    schema=org.gnome.shell.extensions.blur-my-shell.coverflow-alt-tab
-    set_setting "$schema" blur true
-    set_setting "$schema" pipeline "'pipeline_default'"
-
-    schema=org.gnome.shell.extensions.blur-my-shell.dash-to-dock
-    set_setting "$schema" blur true
-    set_setting "$schema" brightness 0.6
-    set_setting "$schema" color "(0.0, 0.0, 0.0, 0.0)"
-    set_setting "$schema" corner-radius 18
-    set_setting "$schema" customize false
-    set_setting "$schema" noise-amount 0.0
-    set_setting "$schema" noise-lightness 0.0
-    set_setting "$schema" override-background true
-    set_setting "$schema" pipeline "'pipeline_default_rounded'"
-    set_setting "$schema" sigma 30
-    set_setting "$schema" static-blur false
-    set_setting "$schema" style-dash-to-dock 0
-    set_setting "$schema" unblur-in-overview false
-
-    set_setting org.gnome.shell.extensions.blur-my-shell.dash-to-panel blur-original-panel true
-    set_setting org.gnome.shell.extensions.blur-my-shell.hidetopbar compatibility false
-
-    schema=org.gnome.shell.extensions.blur-my-shell.lockscreen
-    set_setting "$schema" blur true
-    set_setting "$schema" brightness 0.6
-    set_setting "$schema" color "(0.0, 0.0, 0.0, 0.0)"
-    set_setting "$schema" customize false
-    set_setting "$schema" noise-amount 0.0
-    set_setting "$schema" noise-lightness 0.0
-    set_setting "$schema" pipeline "'pipeline_default'"
-    set_setting "$schema" sigma 30
-
-    schema=org.gnome.shell.extensions.blur-my-shell.overview
-    set_setting "$schema" blur true
-    set_setting "$schema" brightness 0.6
-    set_setting "$schema" color "(0.0, 0.0, 0.0, 0.0)"
-    set_setting "$schema" customize false
-    set_setting "$schema" noise-amount 0.0
-    set_setting "$schema" noise-lightness 0.0
-    set_setting "$schema" pipeline "'pipeline_default'"
-    set_setting "$schema" sigma 30
-    set_setting "$schema" style-components 3
-
-    schema=org.gnome.shell.extensions.blur-my-shell.panel
-    set_setting "$schema" blur true
-    set_setting "$schema" brightness 0.6
-    set_setting "$schema" color "(0.0, 0.0, 0.0, 0.0)"
-    set_setting "$schema" corner-radius 0
-    set_setting "$schema" customize false
-    set_setting "$schema" force-light-text false
-    set_setting "$schema" noise-amount 0.0
-    set_setting "$schema" noise-lightness 0.0
-    set_setting "$schema" override-background true
-    set_setting "$schema" override-background-dynamically false
-    set_setting "$schema" pipeline "'pipeline_71815333033373'"
-    set_setting "$schema" sigma 30
-    set_setting "$schema" static-blur false
-    set_setting "$schema" style-panel 0
-    set_setting "$schema" unblur-in-overview true
-
-    for schema in \
-        org.gnome.shell.extensions.blur-my-shell.screenshot \
-        org.gnome.shell.extensions.blur-my-shell.window-list; do
-        set_setting "$schema" blur true
-        set_setting "$schema" brightness 0.6
-        set_setting "$schema" color "(0.0, 0.0, 0.0, 0.0)"
-        set_setting "$schema" customize false
-        set_setting "$schema" noise-amount 0.0
-        set_setting "$schema" noise-lightness 0.0
-        set_setting "$schema" pipeline "'pipeline_default'"
-        set_setting "$schema" sigma 30
-    done
-}
-
 configure_dock() {
     # This is the current Dash to Dock order. Desktop file IDs are portable
     # across machines as long as the corresponding applications are installed.
@@ -321,7 +201,6 @@ apply_settings() {
     set_setting org.gnome.settings-daemon.plugins.media-keys screensaver "['<Super>l']"
     clear_shell_conflicts
     configure_extensions
-    configure_blur_my_shell
     configure_dock
     configure_custom_bindings
 }
