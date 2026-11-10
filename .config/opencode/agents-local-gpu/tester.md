@@ -5,7 +5,7 @@ description: >-
   blocker. Never commits, pushes, or launches other agents. Invoked by the coder
   or the orchestrator.
 mode: subagent
-model: local/glm-4.7-flash
+model: local/qwen-27b
 permissions:
   - action: subagent
     resource: "*"

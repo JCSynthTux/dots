@@ -4,7 +4,7 @@ description: >-
   Read-only: inspects the diff and code, reports findings, never edits or runs
   builds/tests. Run as the second stage of review after the coder finishes.
 mode: subagent
-model: local/devstral-24b
+model: local/qwen-27b
 permissions:
   - action: edit
     resource: "*"

@@ -5,46 +5,57 @@
 healthCheckTimeout: 240
 
 models:
-  qwen3.8-27b:
+
+  qwen-27b:
     cmd: >
       /usr/bin/llama-server
       --host 127.0.0.1
       --port ${PORT}
-      --model /home/jchroback/.local/share/models/Qwen3.8-27B-UD-Q3_K_XL.gguf
-      --alias qwen3.8-27b
+      --model /home/jchroback/.local/share/models/Qwen3.8-27B-UD-IQ3_XXS.gguf
+      --alias qwen-27b
       --jinja
-      --ctx-size 16384
+      --ctx-size 65536
+      --reasoning off
+      --no-reasoning-preserve
+      --spec-type draft-mtp
+      --spec-draft-n-max 2
+      --temp 0.7
+      --top-p 0.8
+      --top-k 20
+      --min-p 0.0
     ttl: 1800
 
-  glm-4.7-flash:
+  # Thinking sibling of qwen-27b: same GGUF, different flags. llama-swap still
+  # keeps exactly one resident, so switching orchestrator -> coder reloads the
+  # same weights (~10-30 s from page cache). "high" maps to "xhigh" in this
+  # chat template; use "medium" if xhigh turns are too slow.
+  qwen-27b-think:
     cmd: >
       /usr/bin/llama-server
       --host 127.0.0.1
       --port ${PORT}
-      --model /home/jchroback/.local/share/models/GLM-4.7-Flash-UD-Q3_K_XL.gguf
-      --alias glm-4.7-flash
+      --model /home/jchroback/.local/share/models/Qwen3.8-27B-UD-IQ3_XXS.gguf
+      --alias qwen-27b-think
       --jinja
-      --ctx-size 32768
-    ttl: 3600
-
-  devstral-24b:
-    cmd: >
-      /usr/bin/llama-server
-      --host 127.0.0.1
-      --port ${PORT}
-      --model /home/jchroback/.local/share/models/Devstral-Small-2-24B-Instruct-2512-Q3_K_M.gguf
-      --alias devstral-24b
-      --jinja
-      --ctx-size 24576
+      --ctx-size 65536
+      --reasoning on
+      --reasoning-format deepseek
+      --reasoning-effort high
+      --spec-type draft-mtp
+      --spec-draft-n-max 2
+      --temp 0.6
+      --top-p 0.95
+      --top-k 20
+      --min-p 0.0
     ttl: 1800
 
-  heretic-9b:
+  qwen-heretic-8b:
     cmd: >
       /usr/bin/llama-server
       --host 127.0.0.1
       --port ${PORT}
-      --model /home/jchroback/.local/share/models/Qwen3.5-9B-The-Defiant-Fable-Uncnr-Heretic-NEO-MAX-Q4_K_M.gguf
-      --alias heretic-9b
+      --model /home/jchroback/.local/share/models/Qwen3-8B-ZeroZero-heretic-Q4_K_M.gguf
+      --alias qwen-heretic-8b
       --jinja
       --ctx-size 32768
     ttl: 1800

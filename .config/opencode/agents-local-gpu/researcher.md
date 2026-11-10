@@ -3,9 +3,9 @@ description: >-
   Dedicated deep-research agent. Primary-mode (user-invoked, not a subagent):
   performs web research through the searxng MCP tools and reads the local
   repo, then reports findings directly. Read-only. Runs on a local uncensored
-  model (Qwen3.5 9B Heretic) via llama-swap.
+  model (Qwen3 8B Heretic) via llama-swap.
 mode: primary
-model: local/heretic-9b
+model: local/qwen-heretic-8b
 permissions:
   - action: edit
     resource: "*"

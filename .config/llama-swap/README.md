@@ -5,27 +5,36 @@ never manages model processes; llama-swap keeps **one model in VRAM at a time**
 and hot-swaps (kill + start) when a request names a different model. Target: RX
 9060 XT, 16 GB, Navi 44 = gfx1200.
 
-## Fleet: role-specialized models
+## Fleet: one resident model, two siblings
 
 | Role | Model | Quant | Weights | ctx | ttl |
 |------|-------|-------|---------|-----|-----|
-| orchestrator | `qwen3.8-27b` | UD-Q3_K_XL | ~13.2 GB | 16384 | 1800 s |
-| coder, explorer, tester | `glm-4.7-flash` | UD-Q3_K_XL | ~13.8 GB (~12.8 GiB) | 32768 | 3600 s |
-| reviewer | `devstral-24b` | Q3_K_M | ~11.5 GB | 24576 | 1800 s |
-| researcher (dedicated primary) | `heretic-9b` | Q4_K_M | ~6.8 GB (6.83 GB) | 32768 | 1800 s |
+| orchestrator | `qwen-27b-think` (Qwen3.8-27B) | UD-IQ3_XXS | ~10.9 GB (~10.2 GiB) | 65536 | 1800 s |
+| coder, explorer, reviewer, tester | `qwen-27b` (same GGUF) | UD-IQ3_XXS | ~10.9 GB (~10.2 GiB) | 65536 | 1800 s |
+| researcher (dedicated primary) | `qwen-heretic-8b` | Q4_K_M | ~4.7 GB | 32768 | 1800 s |
 
-> **Do not use GLM-4.7-Flash `UD-Q4_K_XL`.** It is 17.5 GB (16.3 GiB) and exceeds
-> the card before KV cache, desktop reserve, or compute buffers.
+`qwen-27b` and `qwen-27b-think` are the **same weights** with different server
+flags, exposed as two model IDs. llama-swap keeps one resident, so every
+orchestrator ↔ subagent hand-off reloads the same GGUF (~10-30 s warm from page
+cache). The trade is deliberate: the orchestrator gets long thinking for
+planning, while coder/explorer/reviewer/tester stay on the fast no-thinking
+slot. The researcher is user-invoked (primary mode), so selecting it swaps the
+resident model once — it does not co-run with the coding fleet.
 
-The researcher is user-invoked (primary mode), so selecting it swaps the resident
-model once — it does not co-run with the orchestration fleet.
+`qwen-27b` runs with thinking **off** (`--reasoning off`): the chat template
+defaults to thinking at `xhigh`, which burns thousands of tokens before the
+first tool call on a 27B IQ3 at ~26 tok/s. `qwen-27b-think` runs with
+`--reasoning on --reasoning-format deepseek --reasoning-effort high` (this
+template maps `high` → `xhigh`); thoughts arrive in `reasoning_content`, which
+OpenCode shows when `capabilities.reasoning.supported` is true. Thinking shares
+the 8192 output budget, so a truncated answer means lowering the effort or
+raising `limit.output`. If xhigh is too slow, switch the slot to
+`--reasoning-effort medium`.
 
-**Swap behaviour:** phase-boundary swaps only — orchestrator → coder → reviewer.
-`explorer` and `tester` ride `glm-4.7-flash`, the coder's model, so only the
-**coder's** mid-run subagent calls avoid a swap. Orchestrator → explorer/reviewer
-dispatch still crosses a model boundary and swaps, which is intended. The
-researcher swaps like the orchestrator — at a phase boundary the user starts, not
-mid-run.
+MTP speculative decoding is enabled (`--spec-type draft-mtp`; the GGUF carries
+one `nextn` layer). Measured acceptance on this card is 87–100%, lifting
+generation to ~26 tok/s with no second model. Prompt processing is ~426 tok/s
+at ubatch 1024.
 
 ## Switching: copy-in-place + git restore
 
@@ -68,6 +77,22 @@ first — `ln -sfn` replaces an existing symlink, not a real directory.
 
 The repo lives at `~/Projects/dots`; adjust if yours differs.
 
+**If the live paths are real directories** (this machine:
+`readlink -f ~/.config/llama-swap` returns the path itself), the repo is *not*
+live. Keep them as copies and sync the two runtime files after every edit, then
+restart the proxy:
+
+```bash
+cp .config/llama-swap/config.yaml ~/.config/llama-swap/config.yaml
+cp .config/llama.cpp/config.ini   ~/.config/llama.cpp/config.ini
+systemctl --user restart llama-swap
+```
+
+Editing the repo alone changes nothing in that layout — the service keeps
+reading the old copies. The same applies to `opencode.local-gpu.jsonc` and
+`agents-local-gpu/`; the switch-to-local `cp` below already reads the repo
+versions, so refresh the live snapshots only if you use them outside the switch.
+
 **Switch to local.** Quit the opencode TUI first, and commit or stash any
 uncommitted changes under `.config/opencode/` — the `cp` overwrites the live
 files, and switching back restores the tracked HEAD versions, not your edits.
@@ -80,9 +105,9 @@ systemctl --user enable --now llama-swap
 ```
 
 Start opencode and check `/agents`: `orchestrator` should show
-`local/qwen3.8-27b`, `coder`/`explorer`/`tester` `local/glm-4.7-flash`, and
-`reviewer` `local/devstral-24b`; `/models` should list the `local/...` models. If
-you did not quit first, run `/reload`.
+`local/qwen-27b-think`; `coder`, `explorer`, `reviewer`, and `tester`
+`local/qwen-27b`; `researcher` `local/qwen-heretic-8b`; `/models` should list
+all three `local/...` models. If you did not quit first, run `/reload`.
 
 **Switch back to cloud.** Quit the TUI, then from the repo root:
 
@@ -94,7 +119,7 @@ rm -f .config/opencode/agents/researcher.md
 
 `git checkout --` restores tracked files but leaves new untracked ones behind, and
 `researcher.md` is local-only — without the `rm -f`, cloud mode keeps a broken
-sixth agent pointing at `local/heretic-9b`. The removal is a no-op if the
+sixth agent pointing at `local/qwen-heretic-8b`. The removal is a no-op if the
 researcher was never copied.
 
 Run `/reload` after switching back too.
@@ -179,17 +204,25 @@ lower `--ctx-size`.
 ## llama.cpp shared config
 
 `~/.config/llama.cpp/config.ini` holds the flags every slot shares, under one
-`[*]` section: 99 GPU layers, `flash-attn auto`, `q8_0` K/V caches, `parallel 1`,
-batch 1024, 8 threads. The `cmd` blocks then keep only what is per-slot —
-`--host`, `--port`, `--model`, `--alias`, `--jinja`, `--ctx-size`; `--jinja`
+`[*]` section: 99 GPU layers, `flash-attn on`, `q8_0` K/V caches, `parallel 1`,
+batch 2048, ubatch 1024, 8 threads. The `cmd` blocks then keep only what is
+per-slot — `--host`, `--port`, `--model`, `--alias`, `--jinja`, `--ctx-size`,
+plus the model-specific `--reasoning off`, MTP, and sampling flags. `--jinja`
 stays explicit because tool calling depends on it.
+
+The env spellings are `LLAMA_ARG_BATCH` and `LLAMA_ARG_N_PARALLEL`; the older
+`LLAMA_ARG_BATCH_SIZE` / `LLAMA_ARG_PARALLEL` keys are silently ignored
+(`not supported by this program` in the log), which drops parallel back to auto
+and ubatch back to 512. A correctly read ini logs `n_slots = 1` and
+`n_ctx_slot = 65536`. ubatch 1024 measured ~426 tok/s prompt processing here
+versus ~225 tok/s at 512; drop it back to 512 if a load OOMs.
 
 Precedence is **config file < environment (`LLAMA_ARG_*`) < CLI flags < model
 presets**, so a per-slot flag always wins over the ini.
 
 The ini needs a recent llama.cpp with system-config support (PR #26118; current
 AUR `-git` builds qualify). Older builds silently ignore the file, which drops
-the `q8_0` KV caches back to f16 — and f16 KV can OOM at 32K. Verify the upstream
+the `q8_0` KV caches back to f16 — and f16 KV can OOM at 64K. Verify the upstream
 startup log instead of assuming: the `llama_kv_cache` line should read
 `K (q8_0)` / `V (q8_0)`, and all layers should be offloaded (`offloaded 99/99`,
 or `n_gpu_layers = 99`):
@@ -236,10 +269,8 @@ loopback only, since otherwise it binds all interfaces with no auth.
 
 ```bash
 mkdir -p ~/.local/share/models
-hf download unsloth/Qwen3.8-27B-GGUF --include "*UD-Q3_K_XL*" --local-dir ~/.local/share/models
-hf download unsloth/GLM-4.7-Flash-GGUF --include "*UD-Q3_K_XL*" --local-dir ~/.local/share/models
-hf download unsloth/Devstral-Small-2-24B-Instruct-2512-GGUF --include "*Q3_K_M*" --local-dir ~/.local/share/models
-hf download DavidAU/Qwen3.5-9B-The-Defiant-Fable-Uncensored-Heretic-NEO-IMATRIX-MAX-MTP-GGUF --include "*MAX-Q4_K_M*" --local-dir ~/.local/share/models
+hf download unsloth/Qwen3.8-27B-GGUF --include "*UD-IQ3_XXS*" --local-dir ~/.local/share/models
+hf download mradermacher/Qwen3-8B-ZeroZero-Heretic-GGUF --include "*Q4_K_M*" --local-dir ~/.local/share/models
 ```
 
 Verify the exact filenames on the HF repos at download time — Unsloth quant
@@ -254,7 +285,7 @@ journalctl --user -u llama-swap -f   # watch loads/swaps
 
 ## Uncensored researcher model — tool-calling caveat
 
-`heretic-9b` ships a Hermes-style `<tool_call>` template, which is present in the
+`qwen-heretic-8b` ships a Hermes-style `<tool_call>` template, which is present in the
 GGUF's chat template, but its reliability under llama.cpp/OpenCode is unproven.
 llama.cpp does not reliably log which chat template it loaded, so a log line is
 not proof: the definitive check is a real `<tool_call>` round-trip from the
@@ -269,12 +300,25 @@ that reasoning models can be tool-reluctant; a firm system prompt helps.
 ## Smoke test (mandatory)
 
 Vendor scores are full-precision claims. Before trusting the fleet, run the same
-refactor → fix → patch task against `glm-4.7-flash`, `qwen3.8-27b` and
-`devstral-24b` on a real repo and compare the results. Also verify each model
-actually emits tool calls in OpenCode: small-model tool calling is binary —
-fitting in VRAM is not the same as working.
+refactor → fix → patch task against `qwen-27b` on a real repo. Also verify the
+model actually emits tool calls in OpenCode: small-model tool calling is binary —
+fitting in VRAM is not the same as working. The `qwen-27b` (fast) slot should
+answer directly (no `<think>` prefix) and return `reasoning_content: null`; the
+`qwen-27b-think` slot should return a non-empty `reasoning_content` before the
+answer. Tool-call responses should carry `finish_reason: tool_calls` on both.
 
-The researcher needs this check most of all: switch to `heretic-9b`, ask it a
+Quick check of the thinking slot:
+
+```bash
+curl -s http://127.0.0.1:8080/v1/chat/completions \
+  -H 'Content-Type: application/json' \
+  -d '{"model":"qwen-27b-think","messages":[{"role":"user","content":"What is 17*23?"}],"max_tokens":512}' \
+  | jq '{reasoning_len: (.choices[0].message.reasoning_content // "" | length), content: .choices[0].message.content}'
+```
+
+A non-zero `reasoning_len` confirms `--reasoning on` took effect.
+
+The researcher needs this check most of all: switch to `qwen-heretic-8b`, ask it a
 question that requires a searxng search, and confirm it emits a tool call instead
 of answering from memory. If it does not, take the Dolphin fallback above.
 
@@ -282,57 +326,68 @@ Finally, confirm the first llama-server start shows the `llama_kv_cache` line wi
 `K (q8_0)` / `V (q8_0)` and all layers offloaded (`offloaded 99/99`):
 
 ```bash
-curl -Ns http://127.0.0.1:8080/logs/stream/upstream | grep -E 'q8_0|offloaded'
+curl -Ns http://127.0.0.1:8080/logs/stream/upstream | grep -E 'q8_0|offloaded|MTP|n_ctx_slot'
+```
+
+A correct `qwen-27b` or `qwen-27b-think` start also logs `n_slots = 1`,
+`n_ctx_slot = 65536`, and `creating MTP draft context`. Check the effective
+context and slot count:
+
+```bash
+curl -s http://127.0.0.1:8080/props | jq '{ctx: .default_generation_settings.n_ctx, slots: .total_slots}'
 ```
 
 The shared `config.ini` is only safe to rely on once that check passes — a missing
 `K (q8_0)`/`V (q8_0)` or a partial offload means the ini was ignored (build too
-old), leaving f16 KV and an OOM at 32K. Use the upstream endpoint: journalctl only
+old), leaving f16 KV and an OOM at 64K. Use the upstream endpoint: journalctl only
 shows these lines when `logToStdout: proxy,upstream` is set, which this config
 does not.
 
 ## VRAM reality (16 GB)
 
-RX 9060 XT: 16 GB, Navi 44 = gfx1200. Reserve **1.0–1.5 GB for the GNOME
-desktop** — never budget to 16.0 GB.
+RX 9060 XT: 16 GB (15.92 GiB usable), Navi 44 = gfx1200. With llama-swap
+stopped and GNOME idle, the desktop reserves ~1.2 GiB — never budget to 16.0 GB.
 
-`glm-4.7-flash` is the tight slot. At `UD-Q3_K_XL` the 32K default sums to
-12.8 GiB weights + ~0.9 GiB q8_0 MLA KV @32K + ~0.8 GiB buffers + 1.5 GiB GNOME
-reserve ≈ 16.0 GiB (over the ~15.9 GiB usable card) → hence the first ladder step,
-24K ≈ 15.8 GiB, is the realistic GNOME default. `--ctx-size 32768` stays in
-`config.yaml` for lean (~1.0 GiB desktop) setups. `qwen3.8-27b` is comfortable by
-comparison — its hybrid-attention KV is small at 16K.
+`qwen-27b` is a hybrid-attention model: only every fourth of its 65 layers is
+full attention. At q8_0 that is ~34 KiB of KV per token, so context is cheap:
 
-| Model | Weights | KV at default ctx | Verdict |
-|-------|---------|-------------------|---------|
-| `qwen3.8-27b` | ~13.2 GB | q8_0 @16K | ~15 GB total — comfortable for its ctx |
-| `glm-4.7-flash` | ~13.8 GB | q8_0 @32K | **tightest slot**; MoE keeps compute cheap |
-| `devstral-24b` | ~11.5 GB | q8_0 ~80 KiB/token: ~1.9 GiB @24K, ~2.5 GiB @32K | 32K is the hard ceiling (f16 baseline: 160 KiB/token) |
-| `heretic-9b` | ~6.8 GB | q8_0 ~2 GiB @32K | ~10 GB total — fits comfortably |
+| Model / config | Weights | KV | Measured total | Verdict |
+|----------------|---------|----|----------------|---------|
+| `qwen-27b` @64K, ubatch 1024 | 10.18 GiB | 2.1 GiB | 14.08 GiB | **default**; ~1.85 GiB free |
+| `qwen-27b` @80K, ubatch 1024 | 10.18 GiB | 2.6 GiB | 15.09 GiB | ~0.83 GiB free — too tight |
+| `qwen-27b` @96K, ubatch 512 | 10.18 GiB | 3.2 GiB | 14.81 GiB | ~1.1 GiB free, but prefill halves |
+| `qwen-heretic-8b` @32K | 4.7 GB | 2.4 GiB | ~8.4 GiB | comfortable |
 
-OOM ladders, in order:
+64K with ubatch 1024 is the best balance: ~426 tok/s prefill and ~1.8 GiB of
+headroom for the desktop. The 80K/96K rows fit only if you close GPU-heavy apps;
+they are not worth the prefill penalty or the OOM risk. `qwen-27b-think` has the
+same weights and context, so the same ~14.08 GiB applies; only the flags differ.
 
-- `glm-4.7-flash`: reduce context 32K → 24K (24576) → 16K. When you take the 24K step,
-  ALSO set `"limit": { "context": 24576 }` for `glm-4.7-flash` in
-  `.config/opencode/opencode.local-gpu.jsonc` and re-run the copy-in-place `cp` for
-  that file — otherwise OpenCode advertises 32768 and can send prompts past the
-  server's context. If it still OOMs, move to a smaller Unsloth quant —
-  `UD-IQ3_XXS` (~12.9 GB), `UD-Q2_K_XL` (~11.9 GB) or `UD-IQ2_M` (~11.0 GB);
-  verify exact filenames on the HF repo at download time. Context reduction cannot
-  fix a weights-size problem.
-- `qwen3.8-27b`: 16K → 12K → 8K context, or drop to `UD-IQ3_S` (~12.0 GB) or
-  `UD-IQ3_XXS` (~10.9 GB).
-- `devstral-24b`: 24K → 16K (32K is the hard ceiling).
+OOM ladder, in order:
 
-`heretic-9b` needs no ladder: ~6.8 GB weights + ~2 GB q8_0 KV @32K + overhead
-lands around 10 GB, comfortably inside the card.
+- `qwen-27b` / `qwen-27b-think`: ubatch 1024 → 512 first (frees ~0.7 GiB but
+  halves prefill), then context 64K (65536) → 48K (49152) → 32K (32768).
+- Whenever you change `--ctx-size`, set the same value in
+  `"limit": { "context": ... }` for **both** `qwen-27b` and `qwen-27b-think` in
+  `.config/opencode/opencode.local-gpu.jsonc` and re-run the copy-in-place `cp`
+  for that file — otherwise OpenCode advertises more context than the server
+  has, and requests fail instead of compacting.
+- `qwen-heretic-8b` needs no ladder: ~4.7 GB weights + ~2.4 GiB q8_0 KV @32K
+  + overhead lands around 8.4 GiB.
 
-`--parallel 1` is deliberate: llama-server divides `--ctx-size` across parallel
-slots, so a higher value multiplies the KV footprint for no benefit here.
+`--parallel 1` is deliberate: this build's `auto` default created four slots,
+and each slot carries its own context bookkeeping. One slot keeps a single 64K
+allocation and avoids slot/checkpoint overhead for a single-user setup.
+
+MTP (`--spec-type draft-mtp`) uses the model's built-in `nextn` layer, so it
+adds no second model and no meaningful VRAM. Generation measured ~26 tok/s with
+87–100% draft acceptance.
 
 **ReBAR is strongly recommended** for the Vulkan backend — it materially helps
 large GGUF allocations, but is not a hard requirement. Check `lspci -vv` for
 `Resizable BAR: enabled`.
 
 Only one model is resident, so any request on a *different* model waits for a
-swap. That is why `explorer` and `tester` share the coder's model.
+swap. The orchestrator deliberately crosses that boundary: its think slot is
+unloaded for each coder/reviewer/tester call and reloaded when the result comes
+back. Only the researcher crosses it by user choice.
