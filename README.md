@@ -18,7 +18,7 @@ symlinks, not directories. The local-GPU extras document their own symlinks in
 
 | Component | What |
 |-----------|------|
-| **Shell** | GNOME Shell (with extensions: Dash to Dock, Blur My Shell, Vitals, auto-move-windows) |
+| **Desktop Shell** | GNOME Shell (with extensions: Dash to Dock, Blur My Shell, Vitals, auto-move-windows) |
 | **Launcher** | GNOME app grid (Super key) |
 | **Lock screen** | GNOME built-in lock screen |
 | **Terminal** | Kitty |
@@ -32,7 +32,16 @@ symlinks, not directories. The local-GPU extras document their own symlinks in
 ```
 .config/
 ├── alacritty/          Alacritty terminal config
+├── git-ssh-wrapper.sh  Git SSH wrapper (Bitwarden agent socket)
 ├── gnome/              GNOME settings script (apply-settings.sh)
+├── k9s/                k9s Kubernetes dashboard config
+├── kitty/              Kitty terminal config
+├── llama.cpp/          llama.cpp server config
+├── llama-swap/         llama-swap model hot-swap config
+├── lsfg-vk/            lsfg-vk (Vulkan frame generator) config
+├── MangoHud/           MangoHud overlay config
+├── opencode/           OpenCode agent/skill config
+├── systemd/            systemd user units (llama-swap.service)
 ├── VSCodium/           VSCodium editor settings
 └── wallpapers/         Wallpaper images
 .oh-my-zsh/             Custom oh-my-zsh theme
@@ -50,14 +59,17 @@ symlinks, not directories. The local-GPU extras document their own symlinks in
 - **Super + E** — File manager (Nautilus)
 - **Super + T** — Editor (VSCodium)
 - **Super + W** — Browser (LibreWolf)
+- **Super + N** — LocalSend
+- **Super + F** — Toggle fullscreen
 - **Super + 1-0** — Switch workspaces
 - **Super + Shift + 1-0** — Move window to workspace
+- **Ctrl + Shift + Escape** — System monitor (btop in Kitty)
 
 ### Workspace Layout
 | WS | App |
 |----|-----|
 | 1 | LibreWolf |
-| 2 | Alacritty |
+| 2 | Kitty |
 | 3 | VSCodium |
 | 4 | Bitwarden |
 
