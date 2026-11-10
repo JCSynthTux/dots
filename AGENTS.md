@@ -4,6 +4,6 @@
 - Secondary Terminal Emulator: Alacritty
 - Desktop Type: Productivity (Coding) and Gaming
 - Interaction: Heavily Keyboard driven
-- Keybinds are macOS and Hyprland inspired
+- Keybinds are macOS inspired
 - Dark Theme
 - Main Theme is Catppuccin Mocha

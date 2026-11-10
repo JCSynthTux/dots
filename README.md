@@ -1,6 +1,6 @@
 # dots
 
-Personal dotfiles for Arch Linux / CachyOS — Hyprland + Noctalia desktop, Catppuccin Mocha themed.
+Personal dotfiles for Arch Linux / CachyOS — GNOME desktop, Catppuccin Mocha themed.
 
 ## Quick Start
 
@@ -18,13 +18,11 @@ symlinks, not directories. The local-GPU extras document their own symlinks in
 
 | Component | What |
 |-----------|------|
-| **WM/Compositor** | Hyprland (Lua config via CachyOS DSL) |
-| **Shell** | Noctalia (control center, notifications, OSD, wallpaper) |
-| **Bar** | Waybar |
-| **Launcher** | Hyprlauncher |
-| **Lock screen** | Hyprlock |
+| **Shell** | GNOME Shell (with extensions: Dash to Dock, Blur My Shell, Vitals, auto-move-windows) |
+| **Launcher** | GNOME app grid (Super key) |
+| **Lock screen** | GNOME built-in lock screen |
 | **Terminal** | Kitty |
-| **Browser** | Chromium |
+| **Browser** | LibreWolf |
 | **Editor** | VSCodium |
 | **Shell** | Zsh with oh-my-zsh (bullet-train theme) |
 | **Color Theme** | Catppuccin Mocha |
@@ -34,14 +32,7 @@ symlinks, not directories. The local-GPU extras document their own symlinks in
 ```
 .config/
 ├── alacritty/          Alacritty terminal config
-├── hypr/               Hyprland compositor config
-│   ├── hyprland.lua    Entry point
-│   ├── hyprlauncher.conf  Hyprlauncher config (Hyprlang)
-│   ├── hyprlock.conf      Hyprlock lock screen config
-│   ├── hyprtoolkit.conf   Hyprtoolkit theme (Catppuccin Mocha)
-│   └── config/         Split modules (keybinds, monitors, windowrules, etc.)
-├── noctalia/           Desktop shell (control center, notifications, lock screen)
-├── waybar/             Top bar (replaces Noctalia bar)
+├── gnome/              GNOME settings script (apply-settings.sh)
 ├── VSCodium/           VSCodium editor settings
 └── wallpapers/         Wallpaper images
 .oh-my-zsh/             Custom oh-my-zsh theme
@@ -51,38 +42,27 @@ symlinks, not directories. The local-GPU extras document their own symlinks in
 ## Features
 
 ### Keybinds
-- **Super + Space** — App launcher (hyprlauncher)
-- **Super + .** — Launcher (type `.` for emoji/unicode)
-- **Super + L** — Lock screen (hyprlock)
-- **Super + Shift + L** — Lock + suspend
-- **Super + Ctrl + L** — Lock + hibernate
-- **Sleep key** — Lock + suspend
+- **Super** — App grid (GNOME launcher)
+- **Super + L** — Lock screen (GNOME)
 - **Super + Q** — Close window
-- **Print** / **Super + Print** — Region / window screenshot (grim + slurp)
-- **Super + V** — Clipboard picker (cliphist + hyprlauncher)
-- **Super + Enter** — Terminal (Alacritty)
-- **Super + W** — Browser (Chromium)
-- **Super + E** — File manager (Dolphin)
+- **Print** / **Super + Print** — Region / window screenshot (gnome-screenshot)
+- **Super + Return** — Terminal (Kitty)
+- **Super + E** — File manager (Nautilus)
 - **Super + T** — Editor (VSCodium)
-- **Super + H** — Hide window (scratchpad)
+- **Super + W** — Browser (LibreWolf)
 - **Super + 1-0** — Switch workspaces
-- **Super + Shift + S** / **Super + S** — Scratchpad
+- **Super + Shift + 1-0** — Move window to workspace
 
 ### Workspace Layout
 | WS | App |
 |----|-----|
-| 1 | Chromium |
+| 1 | LibreWolf |
 | 2 | Alacritty |
 | 3 | VSCodium |
 | 4 | Bitwarden |
 
 ### Colors
-Catppuccin Mocha throughout — terminal, editor, shell UI, window borders, and accent colors.
-
-### Monitor Setup
-- Laptop eDP-1 is the default display
-- External monitor via USB-C dock auto-detects and becomes primary with laptop extended to the right
-- Resets cleanly when unplugged
+Catppuccin Mocha throughout — terminal, editor, shell UI, and accent colors.
 
 ### Git
 - SSH agent handled via Bitwarden SSH agent socket
@@ -91,16 +71,11 @@ Catppuccin Mocha throughout — terminal, editor, shell UI, window borders, and 
 
 ## Dependencies
 
-- **Hyprland** — Wayland compositor
-- **noctalia** — Desktop shell (control center, notifications)
-- **waybar** — Top bar
-- **hyprlauncher** — App launcher
-- **hyprlock** — Lock screen
-- **playerctl** — Media player control (waybar mpris module)
+- **GNOME Shell** — Desktop shell (with extensions: Dash to Dock, Blur My Shell, Vitals, auto-move-windows)
 - **Kitty** — Terminal emulator
-- **Chromium** — Web browser
+- **LibreWolf** — Web browser
 - **VSCodium** — Code editor
-- **dolphin** — File manager
+- **Nautilus** — File manager
 - **oh-my-zsh** — Zsh framework
 - **JetbrainsMono Nerd Font** — Monospace font
 - **Bitwarden** — Password manager with SSH agent

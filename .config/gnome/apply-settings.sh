@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-# Apply the GNOME settings that have direct or close equivalents in the
-# Hyprland configuration. Compositor-specific rules are intentionally not
-# included; GNOME needs extensions for those.
+# Apply the portable GNOME settings from this dotfiles repository.
+# Compositor-specific rules are intentionally not included; GNOME needs
+# extensions for those.
 
 readonly SCRIPT_NAME="${0##*/}"
 readonly CUSTOM_SCHEMA="org.gnome.settings-daemon.plugins.media-keys.custom-keybinding"
@@ -95,7 +95,7 @@ clear_shell_conflicts() {
         set_setting org.gnome.shell.keybindings "switch-to-application-$application" "[]"
     done
 
-    # These overlap with the Hyprland-style custom bindings below.
+    # These overlap with the custom bindings below.
     set_setting org.gnome.shell.keybindings focus-active-notification "[]"
     set_setting org.gnome.shell.keybindings show-screenshot-ui "[]"
     set_setting org.gnome.shell.keybindings screenshot "[]"
@@ -107,7 +107,7 @@ clear_shell_conflicts() {
 }
 
 configure_extensions() {
-    # Match the workspace assignments in hypr/config/windowrules.lua.
+    # Match the per-workspace app assignments used on this desktop.
     set_setting org.gnome.shell.extensions.auto-move-windows application-list \
         "['librewolf.desktop:1','kitty.desktop:2','vscodium.desktop:3','bitwarden.desktop:4','steam.desktop:6']"
 
@@ -121,7 +121,7 @@ configure_extensions() {
     set_setting org.gnome.shell.extensions.dash-to-dock dash-max-icon-size 48
     set_setting org.gnome.shell.extensions.dash-to-dock multi-monitor false
 
-    # Match the monitoring modules shown by Waybar. Battery is enabled here
+    # Show the standard system monitoring modules. Battery is enabled here
     # as well as in GNOME's standard status area.
     set_setting org.gnome.shell.extensions.vitals show-processor true
     set_setting org.gnome.shell.extensions.vitals show-temperature true
@@ -137,8 +137,8 @@ configure_extensions() {
 }
 
 configure_blur_my_shell() {
-    # Preserve the currently exposed Blur My Shell profile. Hyprland disables
-    # blur, but this is an intentional GNOME-shell-only visual setting.
+    # Preserve the currently exposed Blur My Shell profile. This is an
+    # intentional GNOME-shell-only visual setting.
     local schema
     schema=org.gnome.shell.extensions.blur-my-shell
     set_setting "$schema" brightness 0.6
@@ -264,7 +264,7 @@ configure_dock() {
 }
 
 apply_settings() {
-    # Catppuccin Mocha and the JetBrains Mono choices from the Hyprland setup.
+    # Catppuccin Mocha and the JetBrains Mono font choices.
     set_setting org.gnome.desktop.interface color-scheme "'prefer-dark'"
     set_setting org.gnome.desktop.interface gtk-theme "'Orchis-Dark'"
     set_setting org.gnome.desktop.wm.preferences theme "'Orchis-Dark'"
@@ -281,12 +281,12 @@ apply_settings() {
     set_setting org.gnome.desktop.interface clock-show-weekday true
     set_setting org.gnome.desktop.interface enable-hot-corners false
 
-    # hyprpaper equivalent. GNOME uses separate light and dark wallpaper keys.
+    # Wallpaper. GNOME uses separate light and dark wallpaper keys.
     local wallpaper="file://$HOME/.config/wallpapers/peach_unicat.png"
     set_setting org.gnome.desktop.background picture-uri "'$wallpaper'"
     set_setting org.gnome.desktop.background picture-uri-dark "'$wallpaper'"
 
-    # Match the flat acceleration profile in input.lua.
+    # Flat mouse and touchpad acceleration profile.
     set_setting org.gnome.desktop.peripherals.mouse accel-profile "'flat'"
     set_setting org.gnome.desktop.peripherals.touchpad accel-profile "'flat'"
     set_setting org.gnome.desktop.peripherals.mouse natural-scroll false
