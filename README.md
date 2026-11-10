@@ -96,9 +96,11 @@ Catppuccin Mocha throughout — terminal, editor, shell UI, and accent colors.
 
 OpenCode can also run fully local: `llama-server` (llama.cpp) behind
 **llama-swap**, which keeps one model resident and hot-swaps per request on an
-RX 9060 XT (16 GB, RDNA4). The fleet is role-specialized across three models —
-Qwen3.8-27B for orchestration, GLM-4.7-Flash for coding/exploring/testing, and
-Devstral Small 2 24B for review — so swaps land only on phase boundaries.
+RX 9060 XT (16 GB, RDNA4). The fleet is two Qwen3.8-27B slots plus a small
+researcher — `qwen-27b-think` (reasoning on, high effort) for orchestration and
+`qwen-27b` (reasoning off, MTP) for coding/exploring/review/testing, which share
+the same GGUF, plus `qwen-heretic-8b` for research — so swaps land only on
+phase boundaries.
 
 The local variant ships as inert copies — `opencode.local-gpu.jsonc` and
 `agents-local-gpu/` — copied in place over the tracked cloud files to activate,
