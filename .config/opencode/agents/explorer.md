@@ -5,7 +5,7 @@ description: >-
   Never edits or runs commands. Use proactively before any implementation.
   For any web research, use only the searxng MCP search tools.
 mode: subagent
-model: opencode-go/muse-spark-1.3-contributor
+model: opencode-go/deepseek-v4.1-flash
 permissions:
   - action: edit
     resource: "*"

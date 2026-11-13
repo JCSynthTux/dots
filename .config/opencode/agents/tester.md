@@ -5,7 +5,7 @@ description: >-
   blocker. Never commits, pushes, or launches other agents. Invoked by the coder
   or the orchestrator.
 mode: subagent
-model: opencode-go/muse-spark-1.3-contributor
+model: opencode-go/deepseek-v4.1-flash
 permissions:
   - action: subagent
     resource: "*"
