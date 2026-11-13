@@ -16,6 +16,11 @@
             },
             "enabled": true
         },
+        "cloudflare": {
+            "type": "remote",
+            "url": "https://mcp.cloudflare.com/mcp",
+            "enabled": true
+        },
         // searxng lives in the v2 "servers" map on purpose: that is the only
         // place a "codemode" flag survives config normalization (legacy
         // top-level entries are re-encoded and silently drop unknown keys).
