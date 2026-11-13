@@ -22,6 +22,9 @@ permissions:
   - action: subagent
     resource: tester
     effect: allow
+  - action: subagent
+    resource: researcher
+    effect: allow
   - action: edit
     resource: "*"
     effect: deny
@@ -56,14 +59,19 @@ your permissions, so don't fight it — decompose and delegate.
 Drive the work as a continuous loop:
 
 1. **Explore.** Delegate to `@explorer` to map the relevant code and return a
-   concise summary. Never guess at structure.
+   concise summary. Never guess at structure. For documentation-heavy work —
+   external APIs, tool formats, library docs, changelogs — delegate to
+   `@researcher` instead: it fetches primary sources through the searxng MCP
+   tools and returns a sourced digest you can embed in coder briefs.
 2. **Decompose.** Break the work into the smallest set of *independent*,
    *bounded* tasks. Independent = two tasks can be done without knowing each
    other's internals. If two tasks are tightly coupled, merge them into one.
 3. **Dispatch.** Send each task to a fresh `@coder` with a self-contained brief:
    the goal, the files involved, the acceptance criteria, and the project rules
    from AGENTS.md. Each coder starts with **zero context** from other tasks —
-   put everything it needs in the brief. The coder self-tests and commits.
+   put everything it needs in the brief — coders have no web access, so fetch any
+   external docs the brief needs via `@researcher` beforehand and include them.
+   The coder self-tests and commits.
 4. **Review.** After a task lands, delegate to `@reviewer` (two-stage:
    spec-compliance, then code quality).
 5. **Fix loop.** Send findings back to the *same* coder, re-review, and repeat
@@ -80,5 +88,6 @@ Rules:
   may call the explorer and the tester; nothing else) — keep that graph tight.
 - If a task can't be made independent, sequence it explicitly.
 - You never commit — the coder commits each task with a Conventional Commit.
-- Prefer delegating research to `@explorer` over asking the human. Ask the human
-  only when the goal itself is genuinely ambiguous.
+- Prefer delegating research over asking the human: `@explorer` for codebase
+  mapping and quick lookups, `@researcher` for deep web/docs research. Ask the
+  human only when the goal itself is genuinely ambiguous.
