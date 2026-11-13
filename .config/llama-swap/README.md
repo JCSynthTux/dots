@@ -45,6 +45,11 @@ it only scans the fixed `opencode.jsonc` filename and the `agents/` dir. They ar
 manual snapshots of the cloud setup: when you change your cloud config or agent
 definitions, mirror those edits into `opencode.local-gpu.jsonc` and
 `agents-local-gpu/` (keeping the local model pins and `providers` block).
+Exception: the two `researcher.md` files deliberately diverge — the cloud
+`researcher` is an orchestrator subagent, the local one a user-invoked primary
+(the uncensored model is only crossed by explicit user choice). Don't mirror
+mode or workflow wiring between them; still mirror behavioral bullets like the
+sourcing rule.
 
 **Bring-up (once, from the repo root).** Symlink the config dirs into
 `$HOME/.config` by hand. `-sfn` is idempotent over an existing link. Without the
