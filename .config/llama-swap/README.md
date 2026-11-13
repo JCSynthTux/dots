@@ -114,34 +114,30 @@ all three `local/...` models. If you did not quit first, run `/reload`.
 ```bash
 systemctl --user disable --now llama-swap
 git checkout -- .config/opencode/opencode.jsonc .config/opencode/agents/
-rm -f .config/opencode/agents/researcher.md
 ```
 
-`git checkout --` restores tracked files but leaves new untracked ones behind, and
-`researcher.md` is local-only — without the `rm -f`, cloud mode keeps a broken
-sixth agent pointing at `local/qwen-heretic-8b`. The removal is a no-op if the
-researcher was never copied.
+`git checkout --` restores the tracked cloud files, including the cloud
+`researcher.md` that the switch overwrote with the local variant. No `rm -f` is
+needed: `researcher.md` is now tracked, so nothing untracked is left behind.
 
 Run `/reload` after switching back too.
 
 **Safety rules.**
 
-- The swap overwrites tracked files in place and adds one untracked file, so while
-  in local mode the tree is dirty: modified `opencode.jsonc` plus 5 tracked agent
-  files, plus a 6th untracked `agents/researcher.md`. Never commit in that state:
+- The swap overwrites tracked files in place, so while in local mode the tree is
+  dirty: modified `opencode.jsonc` plus all 6 tracked agent files (including
+  `researcher.md`, which the local copy overwrites). Never commit in that state:
   switch back to cloud first, which restores the tracked cloud versions via
-  `git checkout --` and removes the untracked agent with `rm -f`.
+  `git checkout --`.
 - If anything looks wrong while swapped, quit the TUI and run
-  `git checkout -- .config/opencode/opencode.jsonc .config/opencode/agents/`
-  followed by `rm -f .config/opencode/agents/researcher.md`; that resets only the
-  swap targets (tracked files restored, the untracked researcher removed) and
-  returns them to the tracked cloud state. If a swapped state was accidentally
-  committed, `git revert` that commit instead.
+  `git checkout -- .config/opencode/opencode.jsonc .config/opencode/agents/`;
+  that resets only the swap targets and returns them to the tracked cloud state.
+  If a swapped state was accidentally committed, `git revert` that commit
+  instead.
 - While in local mode, edit `opencode.local-gpu.jsonc` and `agents-local-gpu/`
   (then re-run the two `cp` lines) rather than the live swapped files, whose
   edits are discarded on switch-back.
-- Both blocks are idempotent: re-running either leaves the same end state, and the
-  `rm -f` in the switch-back is a no-op when `researcher.md` was never copied.
+- Both blocks are idempotent: re-running either leaves the same end state.
 
 The unit is `ConditionPathExists`-guarded on `~/.config/llama-swap/config.yaml`,
 so it skips cleanly wherever that config is absent. With copy-in-place the config
