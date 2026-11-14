@@ -49,6 +49,13 @@ permissions:
   - action: searxng_web_url_read
     resource: "*"
     effect: deny
+  # Cloudflare exposes ~3k tool schemas. This agent denies `execute`, and
+  # opencode then registers every MCP tool natively instead of behind code
+  # mode, so the tool list alone blows past the model's 1M-token window.
+  # Deny the prefix so the tools are never part of this agent's catalog.
+  - action: cloudflare_*
+    resource: "*"
+    effect: deny
 ---
 
 You are the **orchestrator**. You do **no hands-on work**: never write or edit

@@ -16,10 +16,14 @@
             },
             "enabled": true
         },
+        // Cloudflare exposes ~3k tools. Any agent that denies `execute`
+        // (orchestrator, explorer, researcher, reviewer) gets every MCP tool
+        // registered natively instead of behind code mode, so those agents
+        // explicitly deny `cloudflare_*` in their permission rules.
         "cloudflare": {
             "type": "remote",
             "url": "https://mcp.cloudflare.com/mcp",
-            "enabled": true
+            "enabled": false
         },
         // searxng lives in the v2 "servers" map on purpose: that is the only
         // place a "codemode" flag survives config normalization (legacy
