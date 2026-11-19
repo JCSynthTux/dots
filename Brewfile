@@ -3,6 +3,7 @@ brew "kubeseal"
 brew "k9s"
 brew "talosctl"
 brew "opencode"
+brew "uv"
 
 cask "helium-browser"
 cask "font-jetbrains-mono-nerd-font"
