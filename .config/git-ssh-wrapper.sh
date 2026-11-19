@@ -1,3 +1,3 @@
 #!/bin/sh
-export SSH_AUTH_SOCK="$HOME/.bitwarden-ssh-agent.sock"
+export SSH_AUTH_SOCK="$HOME/.var/app/com.bitwarden.desktop/data/.bitwarden-ssh-agent.sock"
 exec /usr/bin/git "$@"
