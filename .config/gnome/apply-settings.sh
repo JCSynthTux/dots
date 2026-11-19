@@ -91,7 +91,7 @@ apply_settings() {
     set_setting org.gnome.desktop.interface accent-color "'blue'"
     set_setting org.gnome.desktop.interface font-name "'JetBrainsMono Nerd Font 11'"
     set_setting org.gnome.desktop.interface monospace-font-name "'JetBrainsMono Nerd Font 12'"
-    set_setting org.gnome.desktop.interface enable-animations false
+    set_setting org.gnome.desktop.interface enable-animations true
     set_setting org.gnome.desktop.interface show-battery-percentage true
     set_setting org.gnome.desktop.interface clock-format "'24h'"
     set_setting org.gnome.desktop.interface clock-show-date true
