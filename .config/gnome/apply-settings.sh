@@ -87,6 +87,7 @@ configure_dock() {
 apply_settings() {
     # Catppuccin Mocha and the JetBrains Mono font choices.
     set_setting org.gnome.desktop.interface color-scheme "'prefer-dark'"
+    set_setting org.gnome.desktop.background picture-uri "'file:///usr/share/backgrounds/gnome/fold-l.jxl'"
     set_setting org.gnome.desktop.interface accent-color "'blue'"
     set_setting org.gnome.desktop.interface font-name "'JetBrainsMono Nerd Font 11'"
     set_setting org.gnome.desktop.interface monospace-font-name "'JetBrainsMono Nerd Font 12'"
