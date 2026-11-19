@@ -57,36 +57,6 @@ set_custom_binding() {
     set_setting "$CUSTOM_SCHEMA:$path" binding "'$binding'"
 }
 
-configure_custom_bindings() {
-    local bindings=(
-        "$CUSTOM_ROOT/kitty/"
-        "$CUSTOM_ROOT/ranger/"
-        "$CUSTOM_ROOT/codium/"
-        "$CUSTOM_ROOT/librewolf/"
-        "$CUSTOM_ROOT/btop/"
-        "$CUSTOM_ROOT/localsend/"
-        "$CUSTOM_ROOT/screenshot-area/"
-        "$CUSTOM_ROOT/screenshot-window/"
-        "$CUSTOM_ROOT/mic-mute/"
-    )
-
-    set_setting \
-        org.gnome.settings-daemon.plugins.media-keys \
-        custom-keybindings \
-        "[$(printf "'%s'," "${bindings[@]}" | sed 's/,$//')]"
-
-    set_custom_binding kitty "Launch Kitty" "kitty" "<Super>Return"
-    set_custom_binding ranger "File manager" "nautilus" "<Super>e"
-    set_custom_binding codium "VSCodium" "codium" "<Super>t"
-    set_custom_binding librewolf "LibreWolf" "librewolf" "<Super>w"
-    set_custom_binding btop "System monitor" "kitty -e btop" "<Control><Shift>Escape"
-    set_custom_binding localsend "LocalSend" "localsend" "<Super>n"
-    set_custom_binding screenshot-area "Screenshot area" "gnome-screenshot -a" "Print"
-    set_custom_binding screenshot-window "Screenshot window" "gnome-screenshot -w" "<Super>Print"
-    set_custom_binding mic-mute "Mute microphone" \
-        "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle" "<AudioMicMute>"
-}
-
 clear_shell_conflicts() {
     # GNOME Shell claims Super+number for launching Dash applications. Clear
     # those bindings so Mutter can use the keys for workspace switching.
@@ -111,7 +81,7 @@ configure_dock() {
     # This is the current Dash to Dock order. Desktop file IDs are portable
     # across machines as long as the corresponding applications are installed.
     set_setting org.gnome.shell favorite-apps \
-        "['org.gnome.Nautilus.desktop', 'helium.desktop', 'bitwarden.desktop', 'org.mozilla.Thunderbird.desktop', 'org.telegram.desktop.desktop', 'vscodium-wayland.desktop', 'kitty.desktop', 'com.shellyorg.shelly.desktop', 'steam.desktop', 'onlyoffice-desktopeditors.desktop', 'org.gnome.SystemMonitor.desktop']"
+        "['org.gnome.Nautilus.desktop', 'helium.desktop', 'bitwarden.desktop', 'com.bitwarden.desktop.desktop', 'org.mozilla.Thunderbird.desktop', 'org.telegram.desktop.desktop', 'vscodium-wayland.desktop', 'com.vscodium.codium.desktop', 'kitty.desktop', 'org.gnome.Ptyxis.desktop', 'com.shellyorg.shelly.desktop', 'io.github.kolunmi.Bazaar.desktop', 'steam.desktop', 'onlyoffice-desktopeditors.desktop', 'org.gnome.SystemMonitor.desktop', 'io.missioncenter.MissionCenter.desktop']"
 }
 
 apply_settings() {
@@ -161,9 +131,7 @@ apply_settings() {
     # GNOME already owns the standard volume, media, brightness, and lock keys.
     set_setting org.gnome.settings-daemon.plugins.media-keys screensaver "['<Super>l']"
     clear_shell_conflicts
-    configure_extensions
     configure_dock
-    configure_custom_bindings
 }
 
 main() {
