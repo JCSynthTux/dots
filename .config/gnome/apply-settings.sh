@@ -106,35 +106,6 @@ clear_shell_conflicts() {
     set_setting org.gnome.shell.extensions.dash-to-dock shortcut-text "''"
 }
 
-configure_extensions() {
-    # Match the per-workspace app assignments used on this desktop.
-    set_setting org.gnome.shell.extensions.auto-move-windows application-list \
-        "['librewolf.desktop:1','kitty.desktop:2','vscodium.desktop:3','bitwarden.desktop:4','steam.desktop:6']"
-
-    # Dash to Dock provides the macOS-like bottom dock. Disable its number
-    # hotkeys because Super+number belongs to workspace switching here.
-    set_setting org.gnome.shell.extensions.dash-to-dock dock-position "'BOTTOM'"
-    set_setting org.gnome.shell.extensions.dash-to-dock animation-time 0.0
-    set_setting org.gnome.shell.extensions.dash-to-dock hot-keys false
-    set_setting org.gnome.shell.extensions.dash-to-dock autohide true
-    set_setting org.gnome.shell.extensions.dash-to-dock intellihide true
-    set_setting org.gnome.shell.extensions.dash-to-dock dash-max-icon-size 48
-    set_setting org.gnome.shell.extensions.dash-to-dock multi-monitor false
-
-    # Show the standard system monitoring modules. Battery is enabled here
-    # as well as in GNOME's standard status area.
-    set_setting org.gnome.shell.extensions.vitals show-processor true
-    set_setting org.gnome.shell.extensions.vitals show-temperature true
-    set_setting org.gnome.shell.extensions.vitals show-memory true
-    set_setting org.gnome.shell.extensions.vitals show-network true
-    set_setting org.gnome.shell.extensions.vitals show-battery true
-    set_setting org.gnome.shell.extensions.vitals show-fan false
-    set_setting org.gnome.shell.extensions.vitals show-gpu false
-    set_setting org.gnome.shell.extensions.vitals show-storage false
-    set_setting org.gnome.shell.extensions.vitals show-voltage false
-    set_setting org.gnome.shell.extensions.vitals show-system false
-    set_setting org.gnome.shell.extensions.vitals update-time 5
-}
 
 configure_dock() {
     # This is the current Dash to Dock order. Desktop file IDs are portable
@@ -146,12 +117,7 @@ configure_dock() {
 apply_settings() {
     # Catppuccin Mocha and the JetBrains Mono font choices.
     set_setting org.gnome.desktop.interface color-scheme "'prefer-dark'"
-    set_setting org.gnome.desktop.interface gtk-theme "'Orchis-Dark'"
-    set_setting org.gnome.desktop.wm.preferences theme "'Orchis-Dark'"
-    set_setting org.gnome.desktop.interface icon-theme "'Papirus'"
-    set_setting org.gnome.desktop.interface cursor-theme "'Vimix-cursors'"
     set_setting org.gnome.desktop.interface accent-color "'orange'"
-    set_setting org.gnome.shell.extensions.user-theme name "'Orchis-Dark'"
     set_setting org.gnome.desktop.interface font-name "'JetBrainsMono Nerd Font 11'"
     set_setting org.gnome.desktop.interface monospace-font-name "'JetBrainsMono Nerd Font 12'"
     set_setting org.gnome.desktop.interface enable-animations false
@@ -160,11 +126,6 @@ apply_settings() {
     set_setting org.gnome.desktop.interface clock-show-date true
     set_setting org.gnome.desktop.interface clock-show-weekday true
     set_setting org.gnome.desktop.interface enable-hot-corners false
-
-    # Wallpaper. GNOME uses separate light and dark wallpaper keys.
-    local wallpaper="file://$HOME/.config/wallpapers/peach_unicat.png"
-    set_setting org.gnome.desktop.background picture-uri "'$wallpaper'"
-    set_setting org.gnome.desktop.background picture-uri-dark "'$wallpaper'"
 
     # Flat mouse and touchpad acceleration profile.
     set_setting org.gnome.desktop.peripherals.mouse accel-profile "'flat'"

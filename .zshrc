@@ -109,13 +109,13 @@ export TERM=xterm-256color
 
 # export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 
-export SSH_AUTH_SOCK="$HOME/.bitwarden-ssh-agent.sock"
+# export SSH_AUTH_SOCK="$HOME/.bitwarden-ssh-agent.sock"
 
 # Snap
 # export SSH_AUTH_SOCK=/home/$USER/snap/bitwarden/current/.bitwarden-ssh-agent.sock
 
 # Flatpak
-# export SSH_AUTH_SOCK=/home/$USER/.var/app/com.bitwarden.desktop/data/.bitwarden-ssh-agent.sock
+export SSH_AUTH_SOCK=/home/$USER/.var/app/com.bitwarden.desktop/data/.bitwarden-ssh-agent.sock
 
 # bun completions
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
@@ -127,7 +127,3 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # Local secrets — sourced from a file OUTSIDE this dotfiles repo.
 # ~/.zshrc.local is NOT tracked; NEVER put secrets in tracked files here.
 [[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
-
-# llama.cpp: deterministic HF download cache + optional HF token for gated repos
-export LLAMA_CACHE="$HOME/.cache/llama.cpp"
-[ -f ~/.secrets/hf-token ] && export HF_TOKEN="$(cat ~/.secrets/hf-token)"

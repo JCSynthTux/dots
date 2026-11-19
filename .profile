@@ -1,1 +1,0 @@
-export QS_ICON_THEME="Papirus"
