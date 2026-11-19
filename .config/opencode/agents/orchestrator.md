@@ -5,7 +5,7 @@ description: >-
   until each task ships. Does no hands-on work itself — reads and delegates
   only. Use proactively for any multi-step feature, migration, or audit.
 mode: primary
-model: opencode-go/deepseek-v4-pro
+model: opencode-go/glm-5.3
 permissions:
   - action: subagent
     resource: "*"
