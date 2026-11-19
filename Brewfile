@@ -4,6 +4,7 @@ brew "k9s"
 brew "talosctl"
 brew "opencode"
 brew "uv"
+brew "node"
 
 cask "helium-browser"
 cask "font-jetbrains-mono-nerd-font"
