@@ -1,0 +1,12 @@
+brew "kubectl"
+brew "kubeseal"
+brew "k9s"
+brew "talosctl"
+brew "opencode"
+
+cask "helium-browser"
+cask "font-jetbrains-mono-nerd-font"
+
+flatpak "com.bitwarden.desktop"
+flatpak "io.mpv.Mpv"
+flatpak "com.vscodium.codium"
