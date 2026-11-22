@@ -5,6 +5,7 @@ brew "talosctl"
 brew "opencode"
 brew "uv"
 brew "node"
+brew "venv"
 
 cask "helium-browser"
 cask "font-jetbrains-mono-nerd-font"
