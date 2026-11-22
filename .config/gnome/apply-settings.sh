@@ -81,7 +81,7 @@ configure_dock() {
     # This is the current Dash to Dock order. Desktop file IDs are portable
     # across machines as long as the corresponding applications are installed.
     set_setting org.gnome.shell favorite-apps \
-        "['org.gnome.Nautilus.desktop', 'helium.desktop', 'bitwarden.desktop', 'com.bitwarden.desktop.desktop', 'org.mozilla.Thunderbird.desktop', 'org.telegram.desktop.desktop', 'vscodium-wayland.desktop', 'com.vscodium.codium.desktop', 'kitty.desktop', 'org.gnome.Ptyxis.desktop', 'com.shellyorg.shelly.desktop', 'io.github.kolunmi.Bazaar.desktop', 'steam.desktop', 'onlyoffice-desktopeditors.desktop', 'org.gnome.SystemMonitor.desktop', 'io.missioncenter.MissionCenter.desktop']"
+        "['org.gnome.Nautilus.desktop', 'helium.desktop', 'bitwarden.desktop', 'com.bitwarden.desktop.desktop', 'org.mozilla.Thunderbird.desktop', 'org.telegram.desktop.desktop', 'vscodium-wayland.desktop', 'com.vscodium.codium.desktop', 'kitty.desktop', 'org.gnome.Ptyxis.desktop', 'com.shellyorg.shelly.desktop', 'io.github.kolunmi.Bazaar.desktop', 'steam.desktop', 'com.valvesoftware.Steam.desktop', 'onlyoffice-desktopeditors.desktop', 'org.gnome.SystemMonitor.desktop', 'io.missioncenter.MissionCenter.desktop']"
 }
 
 apply_settings() {
