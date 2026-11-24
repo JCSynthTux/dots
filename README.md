@@ -236,9 +236,11 @@ reject the npm registry chain (`UNABLE_TO_GET_ISSUER_CERT_LOCALLY`), which made
 
 ### TUI + skills
 
-`.config/opencode/tui.json` selects the `catppuccin-mocha-flamingo` theme defined
-in `themes/catppuccin-mocha-flamingo.json`. `skills/` holds 62 skill directories
-(`SKILL.md` plus references/assets), auto-discovered by OpenCode.
+`.config/opencode/cli.json` selects the `catppuccin-mocha-flamingo` theme
+defined in `themes/catppuccin-mocha-flamingo.json`. V2 reads one global
+`cli.json`, and its `theme` is an object (`name` plus an optional `mode`, fixed
+to `dark` here). `skills/` holds 62 skill directories (`SKILL.md` plus
+references/assets), auto-discovered by OpenCode.
 
 ## k9s
 

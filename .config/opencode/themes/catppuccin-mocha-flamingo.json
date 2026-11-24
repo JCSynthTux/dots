@@ -1,5 +1,5 @@
 {
-    "$schema": "https://opencode.ai/theme.json",
+    "$schema": "https://opencode.ai/docs/theme.json",
     "defs": {
         "macAccent": "#f2cdcd",
         "macRosewater": "#f5e0dc",
