@@ -11,7 +11,7 @@ metadata:
   role: specialist
   scope: implementation
   output-format: code
-  related-skills: architecture-designer, cloud-architect, debugging-wizard, devops-engineer, microservices-architect, rag-architect, websocket-engineer
+  related-skills: devops-engineer
 ---
 
 # Monitoring Expert

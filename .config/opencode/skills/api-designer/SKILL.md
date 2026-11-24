@@ -11,7 +11,6 @@ metadata:
   role: architect
   scope: design
   output-format: specification
-  related-skills: atlassian-mcp, csharp-developer, fastapi-expert, graphql-architect, java-architect, nestjs-expert, rag-architect, salesforce-developer, security-reviewer, shopify-expert, spring-boot-engineer, typescript-pro
 ---
 
 # API Designer

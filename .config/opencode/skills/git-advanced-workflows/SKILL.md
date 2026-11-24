@@ -20,7 +20,7 @@ Master advanced Git techniques to maintain clean history, collaborate effectivel
 - Clarify goals, constraints, and required inputs.
 - Apply relevant best practices and validate outcomes.
 - Provide actionable steps and verification.
-- If detailed examples are required, open `resources/implementation-playbook.md`.
+- Work from the walkthroughs below; this skill ships no extra files.
 
 ## Use this skill when
 
@@ -407,12 +407,18 @@ git branch recovered-branch abc123
 
 ## Resources
 
-- **references/git-rebase-guide.md**: Deep dive into interactive rebase
-- **references/git-conflict-resolution.md**: Advanced conflict resolution strategies
-- **references/git-history-rewriting.md**: Safely rewriting Git history
-- **assets/git-workflow-checklist.md**: Pre-PR cleanup checklist
-- **assets/git-aliases.md**: Useful Git aliases for advanced workflows
-- **scripts/git-clean-branches.sh**: Clean up merged and stale branches
+This skill is self-contained; the sections above cover each workflow end to
+end:
+
+- Interactive rebase: rehearse on a scratch branch, squash fixups, and reword
+  before rewriting anything shared.
+- Conflict resolution: read both sides with `git diff`, edit the markers out,
+  then `git add` and continue the merge/rebase.
+- History rewriting: prefer `--force-with-lease`, and coordinate with anyone
+  who has the old commits.
+- Pre-PR cleanup: drop debug commits, run the test suite, and reread the diff.
+- Aliases: keep them local and documented rather than depending on them in
+  scripts.
 
 ## Limitations
 - Use this skill only when the task clearly matches the scope described above.

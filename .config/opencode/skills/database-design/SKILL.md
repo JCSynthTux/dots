@@ -23,6 +23,12 @@ date_added: "2026-02-27"
 | `optimization.md` | N+1, EXPLAIN ANALYZE | Query optimization |
 | `migrations.md` | Safe migrations, serverless DBs | Schema changes |
 
+Supporting script:
+
+| File | Description | When to Run |
+|------|-------------|-------------|
+| `scripts/schema_validator.py` | Validates schema DDL for common mistakes | Before shipping a migration |
+
 ---
 
 ## ⚠️ Core Principle

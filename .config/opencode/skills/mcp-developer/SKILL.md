@@ -11,7 +11,7 @@ metadata:
   role: specialist
   scope: implementation
   output-format: code
-  related-skills: atlassian-mcp, devops-engineer, fastapi-expert, security-reviewer, typescript-pro
+  related-skills: devops-engineer
 ---
 
 # MCP Developer

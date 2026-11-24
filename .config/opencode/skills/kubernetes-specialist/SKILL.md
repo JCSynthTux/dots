@@ -11,7 +11,7 @@ metadata:
   role: specialist
   scope: infrastructure
   output-format: manifests
-  related-skills: chaos-engineer, cloud-architect, devops-engineer, microservices-architect, ml-pipeline, security-reviewer, sre-engineer, terraform-engineer
+  related-skills: devops-engineer
 ---
 
 # Kubernetes Specialist

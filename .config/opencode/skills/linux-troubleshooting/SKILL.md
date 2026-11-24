@@ -216,8 +216,6 @@ Use @incident-responder to implement resolution
 ## Related Workflow Bundles
 
 - `os-scripting` - OS scripting
-- `bash-scripting` - Bash scripting
-- `cloud-devops` - DevOps
 
 ## Limitations
 - Use this skill only when the task clearly matches the scope described above.

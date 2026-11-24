@@ -171,7 +171,7 @@ Use @api-documenter to generate comprehensive API documentation
 
 #### Skills to Invoke
 - `deployment-engineer` - Deployment
-- `docker-expert` - Containerization
+- `docker-development` - Containerization
 
 #### Actions
 1. Create Dockerfile
@@ -182,7 +182,7 @@ Use @api-documenter to generate comprehensive API documentation
 
 #### Copy-Paste Prompts
 ```
-Use @docker-expert to containerize FastAPI application
+Use @docker-development to containerize FastAPI application
 ```
 
 ## Technology Stack
@@ -210,7 +210,6 @@ Use @docker-expert to containerize FastAPI application
 ## Related Workflow Bundles
 
 - `development` - General development
-- `database` - Database operations
 - `security-audit` - Security testing
 - `api-development` - API patterns
 
