@@ -49,10 +49,12 @@ Optional, for OpenCode's MCP servers (see [OpenCode](#opencode)):
 
 ```bash
 mkdir -p ~/.secrets
-printf '...' > ~/.secrets/kubeconfig     # no trailing newline
 printf '...' > ~/.secrets/searxng-url    # no trailing newline
-chmod 600 ~/.secrets/kubeconfig ~/.secrets/searxng-url
+chmod 600 ~/.secrets/searxng-url
 ```
+
+The k8s server takes its kubeconfig **path** from the `KUBECONFIG` environment
+variable that `.zshrc` exports, so no extra secret file is needed for it.
 
 Machine-specific env and secrets go in `~/.zshrc.local`, which is sourced if
 present and is deliberately untracked.
@@ -211,13 +213,26 @@ its catalog.
 
 | Server | Type | Details |
 |--------|------|---------|
-| `k8s` | local | `npx -y @dockndevai/mcp-kubernetes`, `K8S_MODE=read-only`, `KUBECONFIG_PATH` from `{file:~/.secrets/kubeconfig}` |
+| `k8s` | local | `npx -y @dockndevai/mcp-kubernetes`, `K8S_MODE=read-only`, `KUBECONFIG_PATH` from `{env:KUBECONFIG}` (exported by `.zshrc`) |
 | `searxng` | local | `npx -y mcp-searxng@2.7.0`, `SEARXNG_URL` from `{file:~/.secrets/searxng-url}`, `codemode: false` |
-| `cloudflare` | remote | `https://mcp.cloudflare.com/mcp`, `enabled: false` |
+| `cloudflare` | remote | `https://mcp.cloudflare.com/mcp`, `disabled: true` |
 
-`{file:...}` reads the value verbatim, so both secret files must be
-`chmod 600` **and have no trailing newline**, or the URL/kubeconfig is passed
-with a stray `\n` and the server fails. They live outside the repo on purpose.
+In the v2 `mcp.servers` map entries are toggled with `disabled`, not `enabled`;
+an `enabled` key there is ignored, so a server meant to be off would still start.
+
+`{file:...}` substitutes the file's **contents**, not its path, so the secret
+file must be `chmod 600` **and have no trailing newline**, or the URL is passed
+with a stray `\n` and the server fails. It lives outside the repo on purpose.
+For the k8s server, which needs a *path*, the config uses `{env:KUBECONFIG}`
+instead — `{file:~/.kube/config}` would hand it kubeconfig YAML to open as a
+filename.
+
+Both local servers also set `NODE_EXTRA_CA_CERTS` to the system trust bundle.
+Fedora-family hosts like this one use
+`/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem`; other distributions need
+their own bundle path in both entries. The Homebrew node build's bundled roots
+reject the npm registry chain (`UNABLE_TO_GET_ISSUER_CERT_LOCALLY`), which made
+`npx` hang until MCP init timed out.
 
 ### TUI + skills
 
