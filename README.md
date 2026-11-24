@@ -213,7 +213,7 @@ its catalog.
 
 | Server | Type | Details |
 |--------|------|---------|
-| `k8s` | local | `npx -y @dockndevai/mcp-kubernetes`, `K8S_MODE=read-only`, `KUBECONFIG_PATH` from `{env:KUBECONFIG}` (exported by `.zshrc`) |
+| `k8s` | local | `npx -y @dockndevai/mcp-kubernetes@0.4.1`, `K8S_MODE=read-only`, `KUBECONFIG_PATH` from `{env:KUBECONFIG}` (exported by `.zshrc`) |
 | `searxng` | local | `npx -y mcp-searxng@2.7.0`, `SEARXNG_URL` from `{file:~/.secrets/searxng-url}`, `codemode: false` |
 | `cloudflare` | remote | `https://mcp.cloudflare.com/mcp`, `disabled: true` |
 

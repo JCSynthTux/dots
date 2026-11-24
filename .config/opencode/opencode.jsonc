@@ -15,7 +15,7 @@
                 "command": [
                     "npx",
                     "-y",
-                    "@dockndevai/mcp-kubernetes"
+                    "@dockndevai/mcp-kubernetes@0.4.1"
                 ],
                 "environment": {
                     // A PATH, not the kubeconfig text: `{file:...}` injects the
