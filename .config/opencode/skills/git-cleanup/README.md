@@ -29,9 +29,9 @@ Invoke with `/git-cleanup` when you have accumulated many local branches and wor
 
 ## Installation
 
-```bash
-claude plugins:add trailofbits/skills/git-cleanup
-```
+This skill ships as a plain OpenCode skill: it lives at
+`.config/opencode/skills/git-cleanup/` and is invoked as the `git-cleanup`
+skill. No plugin install step is required.
 
 ## Example
 

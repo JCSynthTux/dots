@@ -1,6 +1,6 @@
 ---
 name: k8s-security-policies
-description: "Comprehensive guide for implementing NetworkPolicy, PodSecurityPolicy, RBAC, and Pod Security Standards in Kubernetes."
+description: "Comprehensive guide for implementing NetworkPolicy, RBAC, and Pod Security Standards in Kubernetes, with PodSecurityPolicy covered as its removed predecessor."
 risk: unknown
 source: community
 date_added: "2026-02-27"
@@ -8,7 +8,7 @@ date_added: "2026-02-27"
 
 # Kubernetes Security Policies
 
-Comprehensive guide for implementing NetworkPolicy, PodSecurityPolicy, RBAC, and Pod Security Standards in Kubernetes.
+Comprehensive guide for implementing NetworkPolicy, RBAC, and Pod Security Standards in Kubernetes. PodSecurityPolicy appears only as the deprecated predecessor removed in Kubernetes 1.25.
 
 ## Do not use this skill when
 

@@ -540,4 +540,4 @@ kubectl get events --sort-by='.lastTimestamp'
 ## Related Skills
 
 - `k8s-manifest-generator` - For creating base Kubernetes manifests
-- `gitops-workflow` - For automated Helm chart deployments
+- `kubernetes-specialist` - For GitOps/ArgoCD references and automated Helm chart deployments
