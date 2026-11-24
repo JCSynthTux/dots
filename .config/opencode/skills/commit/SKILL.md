@@ -166,6 +166,14 @@ Reason: Caused performance regression in production.
 
 - [Sentry Commit Messages](https://develop.sentry.dev/engineering-practices/commit-messages/)
 
+## Push Helper
+
+`scripts/smart_commit.sh` is the stage-all → conventional-commit → push flow:
+`bash scripts/smart_commit.sh "feat(api): add endpoint"`. It defaults to
+`chore: update code`, commits everything already in the tree, then pushes the
+current branch with `-u origin`. Use it only when a push is actually wanted;
+the message rules above still apply.
+
 ## Limitations
 - Use this skill only when the task clearly matches the scope described above.
 - Do not treat the output as a substitute for environment-specific validation, testing, or expert review.

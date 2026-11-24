@@ -49,6 +49,8 @@ Load detailed guidance based on context:
 | Custom Operators | `references/custom-operators.md` | CRD, Operator SDK, controller-runtime, reconciliation |
 | Service Mesh | `references/service-mesh.md` | Istio, Linkerd, traffic management, mTLS, canary |
 | GitOps | `references/gitops.md` | ArgoCD, Flux, progressive delivery, sealed secrets |
+| ArgoCD Setup | `references/argocd-setup.md` | Installing ArgoCD, registering repositories, app-of-apps |
+| Sync Policies | `references/sync-policies.md` | Sync waves, automated sync, pruning, drift detection |
 | Cost Optimization | `references/cost-optimization.md` | VPA, HPA tuning, spot instances, quotas, right-sizing |
 | Multi-Cluster | `references/multi-cluster.md` | Cluster API, federation, cross-cluster networking, DR |
 

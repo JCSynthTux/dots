@@ -12,6 +12,8 @@ author: community
 
 Create a clean, objective pull request description by analyzing commit history between base and current branch.
 
+For comprehensive PR descriptions, see `resources/implementation-playbook.md`.
+
 ---
 
 ## When to Use
