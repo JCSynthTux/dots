@@ -3,12 +3,6 @@
     "websearch": false,
     "default_agent": "orchestrator",
     "mcp": {
-        // Every server lives in the v2 "servers" map. Legacy top-level
-        // `mcp.<name>` entries are deprecated, and config normalization drops
-        // their non-standard keys (e.g. "codemode"), so servers are defined
-        // here instead.
-        // Note: in this map entries are toggled with "disabled", not "enabled"
-        // (an "enabled" key is ignored, so a disabled server would still start).
         "servers": {
             "k8s": {
                 "type": "local",
@@ -18,32 +12,12 @@
                     "@dockndevai/mcp-kubernetes@0.4.1"
                 ],
                 "environment": {
-                    // A PATH, not the kubeconfig text: `{file:...}` injects the
-                    // file's contents, which the server would try to open as a
-                    // filename. `{env:KUBECONFIG}` is exported by .zshrc and is
-                    // inherited by the OpenCode service.
                     "KUBECONFIG_PATH": "{env:KUBECONFIG}",
                     "K8S_MODE": "read-only",
-                    // The Homebrew node build's bundled root store rejects the
-                    // npm registry's cert chain (UNABLE_TO_GET_ISSUER_CERT_LOCALLY),
-                    // so `npx` can never fetch the server and MCP init times out.
-                    // Point node at the system trust bundle instead.
                     "NODE_EXTRA_CA_CERTS": "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem"
                 },
                 "disabled": false
             },
-            // Cloudflare exposes ~3k tools. Any agent that denies `execute`
-            // (orchestrator, explorer, researcher, reviewer) gets every MCP tool
-            // registered natively instead of behind code mode, so those agents
-            // explicitly deny `cloudflare_*` in their permission rules.
-            "cloudflare": {
-                "type": "remote",
-                "url": "https://mcp.cloudflare.com/mcp",
-                "disabled": true
-            },
-            // codemode:false registers the server's tools natively instead of
-            // routing them through the `execute` tool, so agents that deny
-            // `execute` (e.g. explorer) still get them in their tool catalog.
             "searxng": {
                 "type": "local",
                 "command": [
@@ -59,6 +33,21 @@
                     "NODE_EXTRA_CA_CERTS": "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem"
                 },
                 "codemode": false
+            },
+            "gitea-mcp": {
+                "enabled": true,
+                "type": "local",
+                "command": [
+                    "gitea-mcp-server",
+                    "-t",
+                    "stdio"
+                ],
+                "environment": {
+                    "GITEA_ACCESS_TOKEN": "{file:~/.secrets/gitea_token}",
+                    "GITEA_HOST": "{file:~/.secrets/gitea_host}",
+                    "NODE_EXTRA_CA_CERTS": "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem"
+                },
+                "disabled": false
             }
         }
     }
