@@ -10,6 +10,8 @@ brew "virtualenv"
 cask "helium-browser"
 cask "font-jetbrains-mono-nerd-font"
 
+tap "fluxcd/tap/flux"
+
 flatpak "com.bitwarden.desktop"
 flatpak "io.mpv.Mpv"
 flatpak "com.vscodium.codium"
