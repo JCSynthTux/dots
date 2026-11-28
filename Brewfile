@@ -7,6 +7,7 @@ brew "uv"
 brew "node"
 brew "virtualenv"
 brew "gitea-mcp-server"
+brew "fluxcd"
 
 cask "helium-browser"
 cask "font-jetbrains-mono-nerd-font"
