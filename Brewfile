@@ -6,11 +6,10 @@ brew "opencode"
 brew "uv"
 brew "node"
 brew "virtualenv"
+brew "gitea-mcp-server"
 
 cask "helium-browser"
 cask "font-jetbrains-mono-nerd-font"
-
-tap "fluxcd/tap/flux"
 
 flatpak "com.bitwarden.desktop"
 flatpak "io.mpv.Mpv"
